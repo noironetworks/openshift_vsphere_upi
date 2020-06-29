@@ -1,0 +1,28 @@
+$TTL 3600
+@ SOA ns.{{ aci_system_id}}.{{ basedomain }}. root.{{ aci_system_id }}.{{ basedomain }}. (1 15m 5m 30d 1h)
+        IN    NS    ocplab
+        IN    A     1.1.1.1
+
+
+lb         IN    A    {{ loadbalancer_ip }}
+api         IN    A    {{ loadbalancer_ip }}
+api-int         IN    A    {{ loadbalancer_ip }}
+*.apps          IN    A    {{ loadbalancer_ip }}
+
+{% for item in masters_api_ip_list %}
+master{{ loop.index }} IN  A  {{ item }}
+etcd-{{ loop.index0 }} IN  A {{ item }}
+{% endfor %}
+
+
+{% for item in workers_api_ip_list %}
+worker{{ loop.index }}  IN  A {{ item }}
+{% endfor %}
+
+bootstrap  IN    A    {{ bootstrap_vars.node_ip }}
+
+ocplab    IN    A    {{ loadbalancer_ip }}
+
+_etcd-server-ssl._tcp  SRV 0 10 2380 etcd-0
+                       SRV 0 10 2380 etcd-1
+                       SRV 0 10 2380 etcd-2

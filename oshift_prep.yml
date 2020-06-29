@@ -1,0 +1,108 @@
+---
+  - hosts: orchestrator
+    tasks:
+       - set_fact:
+           bootstrap_dir: "{{ base_dir }}/bootstrap"
+
+       - name: remove bootstrap dir 
+         file:
+           path: "{{ bootstrap_dir }}"
+           state: absent
+
+       - name: create bootstrap dir
+         file:
+           path: "{{ bootstrap_dir }}"
+           state: directory
+
+       - name: copy install-config.yaml to bootstrap dir
+         copy:
+           src: "{{ base_dir }}/install-config.yaml"
+           dest: "{{ bootstrap_dir }}/install-config.yaml"
+
+       - name: create append-bootstrap.ign
+         template:
+           src: "append-bootstrap.ign.j2"
+           dest: "{{ bootstrap_dir }}/append-bootstrap.ign"
+        
+       - name: create openshift manifests
+         command: 
+           cmd: openshift-install create manifests
+           chdir: "{{ bootstrap_dir }}"
+       
+       - name: copy aci-manifests to manifests dir
+         copy:
+           src: "{{ item }}"
+           dest: "{{ bootstrap_dir }}/manifests"
+         with_fileglob: "{{ base_dir }}/aci_manifests/*.yaml"
+
+       - name: copy machine config manifests to manifests dir
+         copy:
+           src: "{{ item }}"
+           dest: "{{ bootstrap_dir }}/manifests"
+         with_fileglob: "{{ base_dir }}/machine_config_manifests/*.yaml"
+
+       - name: remove existing backup dir
+         file:
+           path: "{{ base_dir }}/backup"
+           state: absent
+   
+       - name: create backup dir
+         file:
+           path: "{{ base_dir }}/backup"
+           state: directory
+        
+       - name: copy manifests to backup dir
+         copy:
+           src: "{{ item }}"
+           dest: "{{ base_dir }}/backup"
+         with_fileglob: "{{ bootstrap_dir }}/manifests/*.yaml"
+
+       - name: create ignition configs
+         command: 
+           cmd: openshift-install create ignition-configs
+           chdir: "{{ bootstrap_dir }}"
+       
+       - set_fact:
+           bootstrap_append_ign_file: "{{ bootstrap_dir }}/append-bootstrap.ign"
+           master_ign_file: "{{ bootstrap_dir }}/master.ign"
+           worker_ign_file: "{{ bootstrap_dir }}/worker.ign"
+       
+       - set_fact:
+           bootstrap_ign_64: "{{ lookup('file', bootstrap_append_ign_file) | b64encode }}"
+           master_ign_64: "{{ lookup('file', master_ign_file) | b64encode }}"
+           worker_ign_64: "{{ lookup('file', worker_ign_file) | b64encode }}"
+  
+       - name: change bootstrap ignition url
+         command:
+           cmd: sed -i '/\#base64string/!b;n;c\ \ \ \ default = "'{{ bootstrap_ign_64 }}'"' ../terraform/bootstrap/variables.tf 
+           chdir: "{{ bootstrap_dir }}"
+
+       - name: change masters ignition url
+         command:
+           cmd: sed -i '/\#base64string/!b;n;c\ \ \ \ default = "'{{ master_ign_64 }}'"' ../terraform/masters/variables.tf 
+           chdir: "{{ bootstrap_dir }}"
+
+       - name: change workers ignition url
+         command:
+           cmd: sed -i '/\#base64string/!b;n;c\ \ \ \ default = "'{{ worker_ign_64 }}'"' ../terraform/workers/variables.tf 
+           chdir: "{{ bootstrap_dir }}"
+   
+  - hosts: lb
+    tasks:
+       - set_fact:
+           bootstrap_dir: "{{ base_dir }}/bootstrap"
+
+       - name: remove ignition dir on lb
+         file:
+           path: /var/www/html/ignition
+           state: absent
+
+       - name: create bootstrap dir
+         file:
+           path: /var/www/html/ignition
+           state: directory
+
+       - name: create bootstrap ignition
+         copy:
+           src: "{{ bootstrap_dir }}/bootstrap.ign"
+           dest: /var/www/html/ignition

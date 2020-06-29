@@ -1,0 +1,109 @@
+---
+
+- name: install terraform
+  unarchive:
+     src: "{{ packages.terraform_url }}"
+     dest: /usr/local/bin
+     remote_src: True
+     validate_certs: "{{ packages.validate_certs }}"
+     creates: /usr/local/bin/terraform
+  environment: "{{ proxy_env }}"
+
+- name: install openshift client
+  unarchive:
+     src: "{{ packages.openshift_client_linux_url }}"
+     dest: /usr/local/bin
+     remote_src: True
+     validate_certs: "{{ packages.validate_certs }}"
+     creates: /usr/local/bin/oc
+  environment: "{{ proxy_env }}"
+
+- name: install openshift install
+  unarchive:
+     src: "{{ packages.openshift_install_linux_url }}"
+     dest: /usr/local/bin
+     remote_src: True
+     validate_certs: "{{ packages.validate_certs }}"
+     creates: /usr/local/bin/openshift-install
+  environment: "{{ proxy_env }}"
+
+- name: create terraform variables.tf - bootstrap
+  template:
+     src: tf_bootstrap_variables.j2
+     dest: "{{ base_dir }}/terraform/bootstrap/variables.tf"
+     mode: u=rw,g=r,o=r
+
+- name: create terraform main.tf - bootstrap
+  template:
+     src: tf_bootstrap_main.j2
+     dest: "{{ base_dir }}/terraform/bootstrap/main.tf"
+     mode: u=rw,g=r,o=r
+
+- name: create terraform variables.tf - masters
+  template:
+     src: tf_masters_variables.j2
+     dest: "{{ base_dir }}/terraform/masters/variables.tf"
+     mode: u=rw,g=r,o=r
+
+- name: create terraform main.tf - masters
+  template:
+     src: tf_masters_main.j2
+     dest: "{{ base_dir }}/terraform/masters/main.tf"
+     mode: u=rw,g=r,o=r
+
+- name: create terraform variables.tf - workers
+  template:
+     src: tf_workers_variables.j2
+     dest: "{{ base_dir }}/terraform/workers/variables.tf"
+     mode: u=rw,g=r,o=r
+
+- name: create terraform main.tf - workers
+  template:
+     src: tf_workers_main.j2
+     dest: "{{ base_dir }}/terraform/workers/main.tf"
+     mode: u=rw,g=r,o=r
+
+- name: Init terraform
+  command: terraform init -no-color
+  args:
+     chdir: "{{ item }}"
+  with_items:
+     - "{{ base_dir }}/terraform/bootstrap"
+     - "{{ base_dir }}/terraform/masters"
+     - "{{ base_dir }}/terraform/workers"
+  environment: "{{ proxy_env }}"
+
+#- name: Create opflex interface config file
+#  template:
+#     src: ifcfg-ens224.cfg.j2
+#     dest: "{{ base_dir }}/machine_config_manifests/ifcfg-ens224"
+#
+#- name: Create opflex interface, infra vlan encap config file
+#  template:
+#     src: ifcfg-opflex.cfg.j2
+#     dest: "{{ base_dir }}/machine_config_manifests/ifcfg-opflex"
+#     
+#- name: create multicast opflex route config file
+#  template:
+#     src: opflex-route.j2
+#     dest: "{{ base_dir }}/machine_config_manifests/opflex-route"
+#
+- set_fact:
+     ens224_content: "{{ lookup('template', 'ifcfg-ens224.cfg.j2') }}"
+     opflex_content: "{{ lookup('template', 'ifcfg-opflex.cfg.j2') }}"
+     opflex_route_content: "{{ lookup('template', 'route-opflex.j2') }}"
+
+- name: create Master machine config operator
+  template: 
+     src: master_config_operator.yml.j2
+     dest: "{{ base_dir }}/machine_config_manifests/99-masters-opflex-interface-configuration.yaml"
+
+- name: create worker machine config operator
+  template: 
+     src: worker_config_operator.yml.j2
+     dest: "{{ base_dir }}/machine_config_manifests/99-workers-opflex-interface-configuration.yaml"
+
+- name: create openshift install config file
+  template:
+     src: "install-config.yaml.j2"
+     dest: "{{ base_dir }}/install-config.yaml"

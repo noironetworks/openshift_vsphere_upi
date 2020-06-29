@@ -1,0 +1,73 @@
+provision_dhcp: True
+basedomain: ocplab.local
+
+provision_dns: True
+dns_forwarder: 172.28.184.18
+loadbalancer_ip: 192.168.18.201
+
+proxy_env:
+   dummy: dummy
+   http_proxy: http://proxy.esl.cisco.com:80
+   https_proxy: http://proxy.esl.cisco.com:80
+   no_proxy: 10.30.120.6
+
+#external images download settings
+packages:
+   validate_certs: False
+   terraform_url: https://releases.hashicorp.com/terraform/0.12.26/terraform_0.12.26_linux_amd64.zip
+   openshift_client_linux_url: https://mirror.openshift.com/pub/openshift-v4/clients/ocp/latest/openshift-client-linux.tar.gz
+   openshift_install_linux_url: https://mirror.openshift.com/pub/openshift-v4/clients/ocp/latest/openshift-install-linux.tar.gz
+
+#ACI values:
+default_aci_manifests_archive: aci_manifests.tar.gz
+
+#vsphere values
+vsphere:
+   server: hypf-vc65.noiro.lab
+   user: administrator@vsphere.local
+   passwd: 
+   allow_unverified_ssl: true
+   datacenter_name: hypflex-dc
+   cluster_name: hypflex-cluster
+   datastore_name: noiro
+   RHCOS_template_name: RHCOS443
+
+#install dir
+base_dir: /root/ocpinstall
+
+#bootstrap node variables
+bootstrap_vars:
+   node_mac: 00:50:56:b2:c7:a1
+   node_ip: 192.168.18.210
+   cpu_count: 8
+   memory_KB: 16384
+   disk_size_MB: 40
+
+masters_vars:
+   cpu_count: 8
+   memory_KB: 16384
+   disk_size_MB: 40
+   nodes:
+      - node-1:
+          api_mac: 00:50:56:b2:c7:d1
+          ip: 192.168.18.211
+      - node-2:
+          api_mac: 00:50:56:b2:c7:d3
+          ip: 192.168.18.212
+      - node-3:
+          api_mac: 00:50:56:b2:c7:d5
+          ip: 192.168.18.213
+
+workers_vars:
+   cpu_count: 8
+   memory_KB: 16384
+   disk_size_MB: 40
+   nodes:
+      - node-1:
+          api_mac: 00:50:56:b2:c7:c1
+          ip: 192.168.18.214
+      - node-2:
+          api_mac: 00:50:56:b2:c7:c3
+          ip: 192.168.18.215
+
+openshift_pullsecret: 

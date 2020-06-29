@@ -1,0 +1,36 @@
+resource "vsphere_virtual_machine" "bootstrap" {
+  name             = "{{ aci_system_id }}.bootstrap"
+  resource_pool_id = "${data.vsphere_compute_cluster.cluster.resource_pool_id}"
+  datastore_id     = "${data.vsphere_datastore.datastore1.id}"
+  folder           = ""
+  count            = 1
+
+  num_cpus = {{ bootstrap_vars.cpu_count }}
+  memory   = {{ bootstrap_vars.memory_KB }}
+  guest_id = "${data.vsphere_virtual_machine.RHCOS_template.guest_id}"
+
+  network_interface {
+    network_id   = "${data.vsphere_network.network.id}"
+    adapter_type = "${data.vsphere_virtual_machine.RHCOS_template.network_interface_types[0]}"
+    use_static_mac = true
+    mac_address = "${var.bootstrap_mac}"
+  }
+
+  disk {
+    label            = "disk0"
+    size             = "{{ bootstrap_vars.disk_size_MB }}"
+    thin_provisioned = "${data.vsphere_virtual_machine.RHCOS_template.disks.0.thin_provisioned}"
+    eagerly_scrub    = true
+  }
+
+  clone {
+    template_uuid = "${data.vsphere_virtual_machine.RHCOS_template.id}"
+  }
+
+  vapp {
+    properties = {
+    "guestinfo.ignition.config.data"          = "${var.bootstrap_ignition_url}"
+    "guestinfo.ignition.config.data.encoding" = "base64"
+    }
+  }
+}

@@ -1,0 +1,25 @@
+$ORIGIN    {{ rarpa_str }}.
+$TTL    604800
+@    IN    SOA    ns.{{ aci_system_id }}.{{ basedomain }}. root.{{ aci_system_id }}.{{ basedomain }}. (
+        1576202977        ; Serial
+        604800        ; Refresh
+        86400        ; Retry
+        2419200        ; Expire
+        604800    )    ; Negative Cache TTL
+;
+@        IN    NS    .
+;
+{% for item in masters_api_ip_list %}
+{{ item.split('.')[3] }} IN PTR  master{{ loop.index }}.{{ aci_system_id }}.{{ basedomain }}.
+{{ item.split('.')[3] }} IN PTR  etcd-{{ loop.index0 }}.{{ aci_system_id }}.{{ basedomain }}.
+
+{% endfor %}
+
+
+{% for item in workers_api_ip_list %}
+{{ item.split('.')[3] }} IN PTR  worker{{ loop.index }}.{{ aci_system_id }}.{{ basedomain }}.
+
+{% endfor %}
+
+
+{{ bootstrap_vars.node_ip.split('.')[3] }} IN PTR bootstrap.{{ aci_system_id }}.{{ basedomain }}.

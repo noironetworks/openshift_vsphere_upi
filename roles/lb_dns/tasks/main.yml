@@ -1,0 +1,34 @@
+---
+- debug: msg="Provisioning DNS"
+
+#- include_role:
+#     name: common
+#     tasks_from: main
+
+- name: install bind package
+  package:
+     name:
+        - bind
+     state: latest
+
+- name: setup /etc/named.conf
+  template:
+     src: named.conf.j2
+     dest: /etc/named.conf
+
+- name: setup /var/named/<domain>.forward
+  template:
+     src: forward.j2
+     dest: "/var/named/{{ aci_system_id}}.{{ basedomain }}.forward"
+
+- name: setup reverse lookup
+  template:
+     src: rarpa.j2
+     dest: "/var/named/{{ rarpa_str }}"
+
+- name: service restart named
+  service:
+     name: named
+     state: restarted
+     enabled: yes
+

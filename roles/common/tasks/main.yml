@@ -1,0 +1,125 @@
+---
+
+- set_fact:
+     aci_manifests_archive_provided: False
+
+- name: check if aci manifest archive is provided on command line
+  set_fact:
+     aci_manifests_archive_provided: True
+  when: aci_manifests_archive is defined
+
+- name: check existence of user provided aci manifests archive
+  stat: path="{{ aci_manifests_archive }}"
+  register: user_provided_aci_manifests_archive_stat
+  when: aci_manifests_archive is defined
+  connection: local
+
+- assert:
+     that:
+        - user_provided_aci_manifests_archive_stat.stat.exists == True
+     fail_msg: "File {{ aci_manifests_archive }} missing"
+  when: aci_manifests_archive is defined
+  connection: local
+
+- set_fact:
+     aci_archive: "{{ aci_manifests_archive }}"
+  when: aci_manifests_archive is defined
+
+- name: check default aci manifests archive, when not provided on command line
+  stat: path="{{ playbook_dir }}/files/{{ default_aci_manifests_archive }}"
+  register: default_aci_manifests_archive_stat
+  when: aci_manifests_archive is not defined
+  connection: local
+
+- assert:
+     that:
+        - default_aci_manifests_archive_stat.stat.exists == True
+     fail_msg: "File {{ playbook_dir }}/files/{{ default_aci_manifests_archive }} missing"
+  when: aci_manifests_archive is not defined
+
+- set_fact:
+     aci_archive: "{{ playbook_dir }}/files/{{ default_aci_manifests_archive }}"
+  when: aci_manifests_archive is not defined
+
+- name: create base dir structure
+  file:
+     path: "{{ item }}"
+     state: directory
+     mode: 0775
+  with_items:
+     - "{{ base_dir }}"
+     - "{{ base_dir }}/terraform"
+     - "{{ base_dir }}/terraform/bootstrap"
+     - "{{ base_dir }}/terraform/masters"
+     - "{{ base_dir }}/terraform/workers"
+     - "{{ base_dir }}/aci_manifests"
+     - "{{ base_dir }}/machine_config_manifests"
+  connection: local
+
+- name: Unarchive aci manifests
+  unarchive:
+     src: "{{ aci_archive }}"
+     dest: "{{ base_dir }}/aci_manifests"
+     remote_src: False
+  connection: local
+
+- name: check existance of aci.json in aci manifests
+  stat: path="{{ base_dir }}/aci_manifests/aci.json"
+  register: aci_json_stat
+  connection: local
+
+- assert:
+     that:
+        - aci_json_stat.stat.exists == True
+     fail_msg: "File {{ base_dir }}/aci_manifests/aci.json not found"
+
+- name: install python-netaddr
+  package:
+     name: python-netaddr
+     state: latest
+  connection: local
+
+- include_vars:
+     file: "{{ base_dir }}/aci_manifests/aci.json"
+     name: acivars
+
+- set_fact:
+     aci_system_id: "{{ acivars.system_id }}"
+     aci_kubeapi_vlan: "{{ acivars.kubeapi_vlan }}"
+     aci_infra_vlan: "{{ acivars.infra_vlan }}"
+     aci_apic_hosts: "{{ acivars.apic_hosts }}"
+     machine_network_cidr: "{{ acivars.node_network }}"
+     machine_network_gateway: "{{ acivars.node_network_gateway }}"
+     cluster_network_cidr: "{{ acivars.pod_network }}"
+     node_net_port_group: "{{ acivars.system_id }}_vlan_{{ acivars.kubeapi_vlan }}"
+     domain_nameserver: "{% if provision_dns == True %} {{ loadbalancer_ip }} {% else %} {{ dns_forwarder }} {% endif %}"
+
+- set_fact:
+     machine_network: "{{ machine_network_cidr | ipaddr('network') }}"
+     machine_network_netmask: "{{ machine_network_cidr | ipaddr('netmask') }}"
+
+- set_fact:
+     masters_api_ip_list: "{{ masters_api_ip_list | default([])}} + ['{{ item.value.ip }}']"
+  with_dict: "{{ masters_vars.nodes }}"
+
+- set_fact:
+     workers_api_ip_list: "{{ workers_api_ip_list | default([])}} + ['{{ item.value.ip }}']"
+  with_dict: "{{ workers_vars.nodes }}"
+
+- set_fact:
+     masters_api_mac_list: "{{ masters_api_mac_list | default([])}} + ['{{ item.value.api_mac }}']"
+  with_dict: "{{ masters_vars.nodes }}"
+
+- set_fact:
+     workers_api_mac_list: "{{ workers_api_mac_list | default([])}} + ['{{ item.value.api_mac }}']"
+  with_dict: "{{ workers_vars.nodes }}"
+
+- set_fact:
+     rarpa_str: "{{ '.'.join(machine_network.split('.')[::-1][1:4]) }}.in-addr.arpa"
+
+- set_fact:
+     ssh_pubid_file: "{{ lookup('env','HOME') }}/.ssh/id_rsa.pub"
+
+- set_fact:
+     ssh_public_key: "{{ lookup('file', ssh_pubid_file) }}"
+
