@@ -6,8 +6,8 @@ resource "vsphere_virtual_machine" "masters" {
   count            = length(var.master_api_macs)
   wait_for_guest_net_timeout = -1
 
-  num_cpus = {{ masters_vars.cpu_count }}
-  memory   = {{ masters_vars.memory_KB }}
+  num_cpus = {{ masters_vars.cpu_count | default(4, true) }}
+  memory   = {{ masters_vars.memory_KB | default(16384, true) }}
   guest_id = "${data.vsphere_virtual_machine.RHCOS_template.guest_id}"
 
   network_interface {
@@ -25,7 +25,7 @@ resource "vsphere_virtual_machine" "masters" {
 
   disk {
     label            = "disk0"
-    size             = "{{ masters_vars.disk_size_MB }}"
+    size             = "{{ masters_vars.disk_size_MB | default(40, true) }}"
     thin_provisioned = "${data.vsphere_virtual_machine.RHCOS_template.disks.0.thin_provisioned}"
     eagerly_scrub    = true
   }

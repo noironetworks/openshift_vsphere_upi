@@ -5,8 +5,8 @@ resource "vsphere_virtual_machine" "bootstrap" {
   folder           = ""
   count            = 1
 
-  num_cpus = {{ bootstrap_vars.cpu_count }}
-  memory   = {{ bootstrap_vars.memory_KB }}
+  num_cpus = {{ bootstrap_vars.cpu_count | default(4, true) }}
+  memory   = {{ bootstrap_vars.memory_KB | default(8192, true) }}
   guest_id = "${data.vsphere_virtual_machine.RHCOS_template.guest_id}"
 
   network_interface {
@@ -18,7 +18,7 @@ resource "vsphere_virtual_machine" "bootstrap" {
 
   disk {
     label            = "disk0"
-    size             = "{{ bootstrap_vars.disk_size_MB }}"
+    size             = "{{ bootstrap_vars.disk_size_MB | default(40, true) }}"
     thin_provisioned = "${data.vsphere_virtual_machine.RHCOS_template.disks.0.thin_provisioned}"
     eagerly_scrub    = true
   }

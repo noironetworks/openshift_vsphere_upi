@@ -6,8 +6,8 @@ resource "vsphere_virtual_machine" "workers" {
   count            = length(var.worker_api_macs)
   wait_for_guest_net_timeout = -1
 
-  num_cpus = {{ workers_vars.cpu_count }}
-  memory   = {{ workers_vars.memory_KB }}
+  num_cpus = {{ workers_vars.cpu_count | default(4, true) }}
+  memory   = {{ workers_vars.memory_KB | default(16384, true) }}
   guest_id = "${data.vsphere_virtual_machine.RHCOS_template.guest_id}"
 
   network_interface {
@@ -25,7 +25,7 @@ resource "vsphere_virtual_machine" "workers" {
 
   disk {
     label            = "disk0"
-    size             = "{{ workers_vars.disk_size_MB }}"
+    size             = "{{ workers_vars.disk_size_MB | default(40, true) }}"
     thin_provisioned = "${data.vsphere_virtual_machine.RHCOS_template.disks.0.thin_provisioned}"
     eagerly_scrub    = true
   }

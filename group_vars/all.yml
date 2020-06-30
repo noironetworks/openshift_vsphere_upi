@@ -1,68 +1,105 @@
-provision_dhcp: True
+#provision_dhcp
+#   type: boolean, True or False
+#   required: yes
+#   notes: If set to true, load balancer is configured as dhcp server.
+#          If false, it is assumed that the dhcp server pre-exists
+provision_dhcp: True  
+
+#basedomain
+#   type: string, base dns domain name, cluster metadata name is added as subdomain to this
+#   required: yes
 basedomain: ocplab.local
 
+#provision_dns
+#   type: boolean, True or False
+#   required: yes
+#   notes: If set to true, load balancer is configured as dns server.
+#          If false, it is assumed that the dns server pre-exists.
 provision_dns: True
+
+#dns_forwarder:
+#   type: ip address
+#   required: yes
+#   notes: This value is used when setting up a dhcp service and also for 'forwarders' value in dns configuration.
 dns_forwarder: 172.28.184.18
+
+#loadbalancer_ip:
+#   type: ip address or resolvable hostname
+#   required: yes
+#   notes: this host is configured as load balancer for cluster and also as dhcp and dns server if required
 loadbalancer_ip: 192.168.18.201
 
+#proxy_env
+#  
 proxy_env:
+   #donot remove dummy field, irrespective of whether setup needs a proxy or not.
    dummy: dummy
+   #set the http/https proxy server, if setup does not need proxy, comment the below values.
+   #these values are used for ansible tasks and also passed on to openshift installer
    http_proxy: http://proxy.esl.cisco.com:80
    https_proxy: http://proxy.esl.cisco.com:80
    no_proxy: 10.30.120.6
 
-#external images download settings
+#packages
+#  defines the urls to download terraform, openshift client and openshift-install tools from.
 packages:
    validate_certs: False
    terraform_url: https://releases.hashicorp.com/terraform/0.12.26/terraform_0.12.26_linux_amd64.zip
    openshift_client_linux_url: https://mirror.openshift.com/pub/openshift-v4/clients/ocp/latest/openshift-client-linux.tar.gz
    openshift_install_linux_url: https://mirror.openshift.com/pub/openshift-v4/clients/ocp/latest/openshift-install-linux.tar.gz
 
-#ACI values:
+#default_aci_manifests_archive:
+#  default filename that is searched under files directory.
+#  this can be overridden by passing extra parameter aci_manifests_archive on ansible command line
 default_aci_manifests_archive: aci_manifests.tar.gz
 
-#vsphere values
+#vsphere 
 vsphere:
    server: hypf-vc65.noiro.lab
    user: administrator@vsphere.local
-   passwd: 
+   passwd: #####
    allow_unverified_ssl: true
    datacenter_name: hypflex-dc
    cluster_name: hypflex-cluster
    datastore_name: noiro
    RHCOS_template_name: RHCOS443
 
-#install dir
+#base_dir
+#  type: directory path
+#  required: yes
+#  notes: All install files and directories are created under this directory
 base_dir: /root/ocpinstall
 
 #bootstrap node variables
 bootstrap_vars:
-   node_mac: 00:50:56:b2:c7:a1
-   node_ip: 192.168.18.210
-   cpu_count: 8
-   memory_KB: 16384
-   disk_size_MB: 40
+   node_mac: 00:50:56:b2:c7:a1   #required
+   node_ip: 192.168.18.201       #required
+   cpu_count: 8                  #optional: defaults to 4
+   memory_KB: 16384              #optional: defaults to 8192
+   disk_size_MB: 40              #optional: defaults to 40
 
 masters_vars:
-   cpu_count: 8
-   memory_KB: 16384
-   disk_size_MB: 40
+   cpu_count: 8                  #optional: defaults to 4
+   memory_KB: 16384              #optional: defaults to 16384
+   disk_size_MB: 40              #optional: defaults to 40
    nodes:
+      #mac address and ip address for each node is required
       - node-1:
-          api_mac: 00:50:56:b2:c7:d1
+          api_mac: 00:50:56:b2:c7:b1
           ip: 192.168.18.211
       - node-2:
-          api_mac: 00:50:56:b2:c7:d3
+          api_mac: 00:50:56:b2:c7:b3
           ip: 192.168.18.212
       - node-3:
-          api_mac: 00:50:56:b2:c7:d5
+          api_mac: 00:50:56:b2:c7:b5
           ip: 192.168.18.213
 
 workers_vars:
-   cpu_count: 8
-   memory_KB: 16384
-   disk_size_MB: 40
+   cpu_count: 8                #optional: defaults to 4
+   memory_KB: 16384            #optional: defaults to 16384
+   disk_size_MB: 40            #optional: defaults to 40
    nodes:
+      #mac address and ip address for each node is required
       - node-1:
           api_mac: 00:50:56:b2:c7:c1
           ip: 192.168.18.214
@@ -70,4 +107,9 @@ workers_vars:
           api_mac: 00:50:56:b2:c7:c3
           ip: 192.168.18.215
 
+#openshift_pullsecret:
+#  required: yes
+#  notes: refer to https://access.redhat.com/solutions/4844461
+#  example:
+#    openshift_pullsecret: {"auths":{"cloud.openshift.com":{"auth":.........}
 openshift_pullsecret: 
