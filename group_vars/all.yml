@@ -84,13 +84,13 @@ masters_vars:
    disk_size_MB: 40              #optional: defaults to 40
    nodes:
       #mac address and ip address for each node is required
-      - node-1:
+      - master-1:
           api_mac: 00:50:56:b2:c7:b1
           ip: 192.168.18.211
-      - node-2:
+      - master-2:
           api_mac: 00:50:56:b2:c7:b3
           ip: 192.168.18.212
-      - node-3:
+      - master-3:
           api_mac: 00:50:56:b2:c7:b5
           ip: 192.168.18.213
 
@@ -100,10 +100,10 @@ workers_vars:
    disk_size_MB: 40            #optional: defaults to 40
    nodes:
       #mac address and ip address for each node is required
-      - node-1:
+      - worker-1:
           api_mac: 00:50:56:b2:c7:c1
           ip: 192.168.18.214
-      - node-2:
+      - worker-2:
           api_mac: 00:50:56:b2:c7:c3
           ip: 192.168.18.215
 
