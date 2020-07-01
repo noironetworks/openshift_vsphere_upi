@@ -20,7 +20,7 @@ Ansible playbooks for installing Openshift on Vmware with user provisioned infra
 * copy the archive file created by acc-provision to files directory with name as  **aci_manifests.tar.gz**. Alternatively the file can be specified on command line using variable name *aci_manifests_archive*
 * setup orchestrator and load balancer `ansible-playbook setup.yml`
 * setup openshift install configurate `ansible-playbook oshift_prep.yml`
-* Bring up bootstrap, master and worker nodes `ansible-playbook create_nodes.yml
+* Bring up bootstrap, master and worker nodes `ansible-playbook create_nodes.yml`
 
 ## Deleting the cluster
 The cluster can be removed using the delete_nodes.yaml playbook `ansible-playbook delete_nodes.yml`
