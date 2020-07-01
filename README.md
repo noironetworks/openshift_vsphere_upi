@@ -16,6 +16,7 @@ Ansible playbooks for installing Openshift on Vmware with user provisioned infra
 * clone this repository on the orchestrator system.
 * Install ansible module requirements`cd openshift_vsphere_upi; ansible-galaxy install -r requirements.yaml
 * edit the variable values in group_vars/all.yaml and hosts.ini
+* perform basic validation of variable values using asserts.yml playbook `ansible-playbook asserts.yml`
 * copy the archive file created by acc-provision to files directory with name as  **aci_manifests.tar.gz**. Alternatively the file can be specified on command line using variable name *aci_manifests_archive*
 * setup orchestrator and load balancer `ansible-playbook setup.yml`
 * setup openshift install configurate `ansible-playbook oshift_prep.yml`
