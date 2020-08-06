@@ -1,10 +1,14 @@
 apiVersion: v1
 baseDomain: {{ basedomain }}
-{% if proxy_env.http_proxy is defined %}
+{% if proxy_env.http_proxy is defined  and proxy_env.https_proxy is defined %}
 proxy:
   httpProxy: {{ proxy_env.http_proxy }}
   httpsProxy: {{ proxy_env.https_proxy }}
-  noProxy: .{{ aci_system_id }}.{{ basedomain }},.{{ basedomain }},{{ aci_apic_hosts }},172.30.0.1,172.30.0.10,.apps.{{ aci_system_id }}.{{ basedomain }},{{ vsphere.server }},{{ machine_network_cidr }}
+{% if proxy_env.no_proxy is defined %}
+  noProxy: .{{ aci_system_id }}.{{ basedomain }},.{{ basedomain }},{{ aci_apic_hosts|join(',') }},172.30.0.1,172.30.0.10,.apps.{{ aci_system_id }}.{{ basedomain }},{{ vsphere.server }},{{ machine_network_cidr }},{{ proxy_env.no_proxy }}
+{% else %}
+  noProxy: .{{ aci_system_id }}.{{ basedomain }},.{{ basedomain }},{{ aci_apic_host|join(',') }},172.30.0.1,172.30.0.10,.apps.{{ aci_system_id }}.{{ basedomain }},{{ vsphere.server }},{{ machine_network_cidr }}
+{% endif %}
 {% endif %}
 
 compute:
@@ -34,4 +38,12 @@ platform:
     datacenter: {{ vsphere.datacenter_name }}
     defaultDatastore: {{ vsphere.datastore_name }}
 pullSecret: '{{ openshift_pullsecret | to_json }}'
+{% if user_ssh_key is defined %}
+sshKey: '{{ user_ssh_key }}'
+{% else %}
 sshKey: '{{ ssh_public_key }}'
+{% endif %}
+{% if additional_trust_bundle is defined %}
+additionalTrustBundle: |
+{{ additional_trust_bundle | indent(width=3,indentfirst=True) }}
+{% endif %}

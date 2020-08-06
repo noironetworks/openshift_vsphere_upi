@@ -38,7 +38,7 @@ proxy_env:
    #these values are used for ansible tasks and also passed on to openshift installer
    http_proxy: http://proxy.esl.cisco.com:80
    https_proxy: http://proxy.esl.cisco.com:80
-   no_proxy: 10.30.120.6
+   no_proxy: 10.30.120.6,10.30.120.20,noiro-quay.cisco.com
 
 #packages
 #  defines the urls to download terraform, openshift client and openshift-install tools from.
@@ -57,7 +57,7 @@ default_aci_manifests_archive: aci_manifests.tar.gz
 vsphere:
    server: hypf-vc65.noiro.lab
    user: administrator@vsphere.local
-   passwd: #####
+   passwd: xxxx
    allow_unverified_ssl: true
    datacenter_name: hypflex-dc
    cluster_name: hypflex-cluster
@@ -73,7 +73,7 @@ base_dir: /root/ocpinstall
 #bootstrap node variables
 bootstrap_vars:
    node_mac: 00:50:56:b2:c7:a1   #required
-   node_ip: 192.168.18.201       #required
+   node_ip: 192.168.18.210       #required
    cpu_count: 8                  #optional: defaults to 4
    memory_KB: 16384              #optional: defaults to 8192
    disk_size_MB: 40              #optional: defaults to 40
@@ -106,6 +106,24 @@ workers_vars:
       - worker-2:
           api_mac: 00:50:56:b2:c7:c3
           ip: 192.168.18.215
+
+#user_ssh_key:
+#  required: no
+#  notes: if specified this key is setup on nodes, else ssh key of current
+#        user is used.
+user_ssh_key: ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQD...
+
+#additional_trust_bundle:
+#  required: no
+#  notes: use this field to add a certificate for private repository
+#    
+# example:
+#additional_trust_bundle: |
+#   -----BEGIN CERTIFICATE-----
+#   MIIDDDCCAfQCCQDuOnV7XBjpODANBgkqhkiG9w0BAQsFADBIMQswCQYDVQQGEwJV
+#   UzELMAkGA1UECAwCQ0ExDDAKBgNVBAcMA1NKQzEOMAwGA1UECgwFQ2lzY28xDjAM
+#  -----END CERTIFICATE-----
+
 
 #openshift_pullsecret:
 #  required: yes

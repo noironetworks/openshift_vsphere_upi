@@ -63,15 +63,15 @@
      remote_src: False
   connection: local
 
-- name: check existance of aci.json in aci manifests
-  stat: path="{{ base_dir }}/aci_manifests/aci.json"
+- name: check existance of apic.json in aci manifests
+  stat: path="{{ base_dir }}/aci_manifests/apic.json"
   register: aci_json_stat
   connection: local
 
 - assert:
      that:
         - aci_json_stat.stat.exists == True
-     fail_msg: "File {{ base_dir }}/aci_manifests/aci.json not found"
+     fail_msg: "File {{ base_dir }}/aci_manifests/apic.json not found"
 
 - name: install python-netaddr
   package:
@@ -80,7 +80,7 @@
   connection: local
 
 - include_vars:
-     file: "{{ base_dir }}/aci_manifests/aci.json"
+     file: "{{ base_dir }}/aci_manifests/apic.json"
      name: acivars
 
 - set_fact:
