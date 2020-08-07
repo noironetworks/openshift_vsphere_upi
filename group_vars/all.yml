@@ -29,6 +29,12 @@ dns_forwarder: 172.28.184.18
 #   notes: this host is configured as load balancer for cluster and also as dhcp and dns server if required
 loadbalancer_ip: 192.168.18.201
 
+#auto_approve_csr:
+#   type: boolean
+#   required: yes
+#   notes: when set to true, sets up a cron job to auto approve openshift csr
+auto_approve_csr: True
+
 #proxy_env
 #  
 proxy_env:
