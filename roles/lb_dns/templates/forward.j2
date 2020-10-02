@@ -1,6 +1,7 @@
+{% set dlist = basedomain.split('.') %}
 $TTL 3600
 @ SOA ns.{{ aci_system_id}}.{{ basedomain }}. root.{{ aci_system_id }}.{{ basedomain }}. (1 15m 5m 30d 1h)
-        IN    NS    ocplab
+        IN    NS    {{ dlist[0] }}
         IN    A     1.1.1.1
 
 
@@ -21,7 +22,7 @@ worker{{ loop.index }}  IN  A {{ item }}
 
 bootstrap  IN    A    {{ bootstrap_vars.node_ip }}
 
-ocplab    IN    A    {{ loadbalancer_ip }}
+{{ dlist[0] }}    IN    A    {{ loadbalancer_ip }}
 
 _etcd-server-ssl._tcp  SRV 0 10 2380 etcd-0
                        SRV 0 10 2380 etcd-1
