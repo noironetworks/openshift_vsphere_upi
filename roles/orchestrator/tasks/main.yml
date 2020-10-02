@@ -6,7 +6,6 @@
      dest: /usr/local/bin
      remote_src: True
      validate_certs: "{{ packages.validate_certs }}"
-     creates: /usr/local/bin/terraform
   environment: "{{ proxy_env }}"
 
 - name: install openshift client
@@ -15,7 +14,6 @@
      dest: /usr/local/bin
      remote_src: True
      validate_certs: "{{ packages.validate_certs }}"
-     creates: /usr/local/bin/oc
   environment: "{{ proxy_env }}"
 
 - name: install openshift install
@@ -24,7 +22,6 @@
      dest: /usr/local/bin
      remote_src: True
      validate_certs: "{{ packages.validate_certs }}"
-     creates: /usr/local/bin/openshift-install
   environment: "{{ proxy_env }}"
 
 - name: create terraform variables.tf - bootstrap
