@@ -1,13 +1,15 @@
 apiVersion: v1
+{% set dlist = domainname.split('.') %}
+{% set basedomain = dlist[1::]|join('.') %}
 baseDomain: {{ basedomain }}
 {% if proxy_env.http_proxy is defined  and proxy_env.https_proxy is defined %}
 proxy:
   httpProxy: {{ proxy_env.http_proxy }}
   httpsProxy: {{ proxy_env.https_proxy }}
 {% if proxy_env.no_proxy is defined %}
-  noProxy: .{{ aci_system_id }}.{{ basedomain }},.{{ basedomain }},{{ aci_apic_hosts|join(',') }},172.30.0.1,172.30.0.10,.apps.{{ aci_system_id }}.{{ basedomain }},{{ vsphere.server }},{{ machine_network_cidr }},{{ proxy_env.no_proxy }}
+  noProxy: .{{ domainname }},.{{ basedomain }},{{ aci_apic_hosts|join(',') }},172.30.0.1,172.30.0.10,.apps.{{ domainname }},{{ vsphere.server }},{{ machine_network_cidr }},{{ proxy_env.no_proxy }}
 {% else %}
-  noProxy: .{{ aci_system_id }}.{{ basedomain }},.{{ basedomain }},{{ aci_apic_host|join(',') }},172.30.0.1,172.30.0.10,.apps.{{ aci_system_id }}.{{ basedomain }},{{ vsphere.server }},{{ machine_network_cidr }}
+  noProxy: .{{ domainname }},.{{ basedomain }},{{ aci_apic_host|join(',') }},172.30.0.1,172.30.0.10,.apps.{{ domainname }},{{ vsphere.server }},{{ machine_network_cidr }}
 {% endif %}
 {% endif %}
 
@@ -20,7 +22,7 @@ controlPlane:
   name: master
   replicas: {{ masters_api_ip_list | length }}
 metadata:
-  name: {{ aci_system_id }}
+  name: {{ dlist[0] }}
 networking:
   clusterNetwork:
   - cidr: {{ cluster_network_cidr }}

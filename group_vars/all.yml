@@ -5,10 +5,10 @@
 #          If false, it is assumed that the dhcp server pre-exists
 provision_dhcp: True  
 
-#basedomain
-#   type: string, base dns domain name, cluster metadata name is added as subdomain to this
+#domainname
+#   type: string, 
 #   required: yes
-basedomain: ocplab.local
+basedomain: ocp4-aci.ocplab.local
 
 #provision_dns
 #   type: boolean, True or False
@@ -58,6 +58,11 @@ packages:
 #  default filename that is searched under files directory.
 #  this can be overridden by passing extra parameter aci_manifests_archive on ansible command line
 default_aci_manifests_archive: aci_manifests.tar.gz
+
+#opflex_interface_mtu:
+# required: yes
+# MTU size for interface connected to fabric, must be greater than 1564
+opflex_interface_mtu: 1800
 
 #vsphere 
 vsphere:

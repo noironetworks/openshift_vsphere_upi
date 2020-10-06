@@ -1,5 +1,6 @@
+{% set dlist = domainname.split('.') %}
 resource "vsphere_virtual_machine" "masters" {
-  name             = "{{ aci_system_id }}.master${count.index + 1}"
+  name             = "{{ dlist[0] }}.master${count.index + 1}"
   resource_pool_id = "${data.vsphere_compute_cluster.cluster.resource_pool_id}"
   datastore_id     = "${data.vsphere_datastore.datastore1.id}"
   folder           = ""
@@ -27,7 +28,7 @@ resource "vsphere_virtual_machine" "masters" {
     label            = "disk0"
     size             = "{{ masters_vars.disk_size_MB | default(40, true) }}"
     thin_provisioned = "${data.vsphere_virtual_machine.RHCOS_template.disks.0.thin_provisioned}"
-    eagerly_scrub    = true
+    eagerly_scrub    = "${data.vsphere_virtual_machine.RHCOS_template.disks.0.eagerly_scrub}"
   }
 
   clone {

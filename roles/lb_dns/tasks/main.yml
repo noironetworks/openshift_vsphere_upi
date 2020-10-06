@@ -19,7 +19,7 @@
 - name: setup /var/named/<domain>.forward
   template:
      src: forward.j2
-     dest: "/var/named/{{ aci_system_id}}.{{ basedomain }}.forward"
+     dest: "/var/named/{{ domainname }}.forward"
 
 - name: setup reverse lookup
   template:

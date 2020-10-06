@@ -1,4 +1,4 @@
-option domain-name "{{ aci_system_id }}.{{ basedomain }}";
+option domain-name "{{ domainname }}";
 option domain-name-servers {{ domain_nameserver }};
 
 default-lease-time 600;
@@ -14,7 +14,7 @@ subnet {{ machine_network }} netmask {{ machine_network_netmask }} {
 
 host bootstrap {
   hardware ethernet {{ bootstrap_vars.node_mac }};
-  option host-name "bootstrap.{{ aci_system_id }}.{{ basedomain }}";
+  option host-name "bootstrap.{{ domainname }}";
   fixed-address {{ bootstrap_vars.node_ip }};
 }
 
@@ -23,7 +23,7 @@ host bootstrap {
 {% for node in item.keys() %}
 host master{{outer_loop.index}} {
   hardware ethernet {{ masters_vars.nodes[outer_loop.index0][node]['api_mac']}};
-  option host-name "master{{ outer_loop.index }}.{{aci_system_id}}.{{basedomain}}";
+  option host-name "master{{ outer_loop.index }}.{{ domainname }}";
   fixed-address {{ masters_vars.nodes[outer_loop.index0][node]['ip']}};
 }
 {% endfor %}
@@ -34,7 +34,7 @@ host master{{outer_loop.index}} {
 {% for node in item.keys() %}
 host worker{{outer_loop.index}} {
   hardware ethernet {{ workers_vars.nodes[outer_loop.index0][node]['api_mac']}};
-  option host-name "worker{{ outer_loop.index }}.{{aci_system_id}}.{{basedomain}}";
+  option host-name "worker{{ outer_loop.index }}.{{ domainname }}";
   fixed-address {{ workers_vars.nodes[outer_loop.index0][node]['ip']}};
 }
 {% endfor %}

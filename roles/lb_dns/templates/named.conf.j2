@@ -32,9 +32,9 @@ logging {
 };
 
 
-zone "{{ aci_system_id }}.{{ basedomain }}." IN {
+zone "{{ domainname }}." IN {
    type master;
-   file "{{ aci_system_id }}.{{ basedomain }}.forward";
+   file "{{ domainname }}.forward";
 };
 
 zone "{{ rarpa_str }}" {
