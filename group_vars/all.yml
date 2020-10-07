@@ -51,8 +51,8 @@ proxy_env:
 packages:
    validate_certs: False
    terraform_url: https://releases.hashicorp.com/terraform/0.12.26/terraform_0.12.26_linux_amd64.zip
-   openshift_client_linux_url: https://mirror.openshift.com/pub/openshift-v4/clients/ocp/4.4.27/openshift-client-linux-4.4.27.tar.gz
-   openshift_install_linux_url: https://mirror.openshift.com/pub/openshift-v4/clients/ocp/4.4.27/openshift-install-linux-4.4.27.tar.gz
+   openshift_client_linux_url: https://mirror.openshift.com/pub/openshift-v4/clients/ocp/4.4.26/openshift-client-linux-4.4.26.tar.gz
+   openshift_install_linux_url: https://mirror.openshift.com/pub/openshift-v4/clients/ocp/4.4.26/openshift-install-linux-4.4.26.tar.gz
 
 #default_aci_manifests_archive:
 #  default filename that is searched under files directory.
