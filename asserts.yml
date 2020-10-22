@@ -21,7 +21,7 @@
            - vsphere.datastore_name
            - vsphere.RHCOS_template_name
            - openshift_pullsecret
-           - basedomain
+           - domainname
 
        - assert:
            that:

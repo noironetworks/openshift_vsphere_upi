@@ -8,7 +8,7 @@ provision_dhcp: True
 #domainname
 #   type: string, 
 #   required: yes
-basedomain: ocp4-aci.ocplab.local
+domainname: ocp4-aci.ocplab.local
 
 #provision_dns
 #   type: boolean, True or False
