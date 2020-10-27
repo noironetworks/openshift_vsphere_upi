@@ -138,7 +138,7 @@ user_ssh_key: ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQD...
 
 #openshift_pullsecret:
 #  required: yes
-#  notes: refer to https://access.redhat.com/solutions/4844461
+#  notes: refer to https://cloud.redhat.com/openshift/install/pull-secret
 #  example:
 #    openshift_pullsecret: {"auths":{"cloud.openshift.com":{"auth":.........}
 openshift_pullsecret: 
