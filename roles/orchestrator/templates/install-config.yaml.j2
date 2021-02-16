@@ -1,6 +1,7 @@
 apiVersion: v1
 {% set dlist = domainname.split('.') %}
 {% set basedomain = dlist[1::]|join('.') %}
+baseDomain: {{ basedomain }}
 {% if proxy_env.http_proxy is defined  and proxy_env.https_proxy is defined %}
 proxy:
   httpProxy: {{ proxy_env.http_proxy }}
