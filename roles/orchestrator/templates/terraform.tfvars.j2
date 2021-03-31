@@ -1,0 +1,17 @@
+bootstrap_mac = "{{ bootstrap_vars.node_mac }}"
+master_macs = {{ masters_api_mac_list | to_json }}
+worker_macs = {{ workers_api_mac_list | to_json }}
+
+api_network_name = "{{ node_net_port_group }}"
+opflex_network_name = "{{ aci_system_id }}"
+
+## Cluster configuration
+rhcos_template = "{{ vsphere.RHCOS_template_name }}"
+cluster_slug = "{{ aci_system_id }}"
+cluster_domain = "{{ domainname }}"
+
+## Expects `openshift-install create ignition-configs` to have been run
+## probably via generate-configs.sh
+bootstrap_ignition_path = "../../46/bootstrap/bootstrap.ign"
+master_ignition_path = "../../46/bootstrap/master.ign"
+worker_ignition_path = "../../46/bootstrap/worker.ign"

@@ -24,40 +24,28 @@
      validate_certs: "{{ packages.validate_certs }}"
   environment: "{{ proxy_env }}"
 
-- name: create terraform variables.tf - bootstrap
+- name: create terraform main.tf 
   template:
-     src: tf_bootstrap_variables.j2
-     dest: "{{ base_dir }}/terraform/bootstrap/variables.tf"
+     src: main.tf.j2
+     dest: "{{ base_dir }}/terraform/main.tf"
      mode: u=rw,g=r,o=r
 
-- name: create terraform main.tf - bootstrap
+- name: create terraform terraform.tfvars
   template:
-     src: tf_bootstrap_main.j2
-     dest: "{{ base_dir }}/terraform/bootstrap/main.tf"
+     src: terraform.tfvars.j2
+     dest: "{{ base_dir }}/terraform/terraform.tfvars"
      mode: u=rw,g=r,o=r
 
-- name: create terraform variables.tf - masters
+- name: create terraform variables.tf 
   template:
-     src: tf_masters_variables.j2
-     dest: "{{ base_dir }}/terraform/masters/variables.tf"
+     src: variables.tf.j2
+     dest: "{{ base_dir }}/terraform/variables.tf"
      mode: u=rw,g=r,o=r
 
-- name: create terraform main.tf - masters
+- name: create terraform versions.tf
   template:
-     src: tf_masters_main.j2
-     dest: "{{ base_dir }}/terraform/masters/main.tf"
-     mode: u=rw,g=r,o=r
-
-- name: create terraform variables.tf - workers
-  template:
-     src: tf_workers_variables.j2
-     dest: "{{ base_dir }}/terraform/workers/variables.tf"
-     mode: u=rw,g=r,o=r
-
-- name: create terraform main.tf - workers
-  template:
-     src: tf_workers_main.j2
-     dest: "{{ base_dir }}/terraform/workers/main.tf"
+     src: versions.tf.j2
+     dest: "{{ base_dir }}/terraform/versions.tf"
      mode: u=rw,g=r,o=r
 
 - name: Init terraform
@@ -65,9 +53,7 @@
   args:
      chdir: "{{ item }}"
   with_items:
-     - "{{ base_dir }}/terraform/bootstrap"
-     - "{{ base_dir }}/terraform/masters"
-     - "{{ base_dir }}/terraform/workers"
+     - "{{ base_dir }}/terraform"
   environment: "{{ proxy_env }}"
 
 #- name: Create opflex interface config file

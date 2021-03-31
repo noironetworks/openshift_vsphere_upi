@@ -19,10 +19,10 @@
            src: "{{ base_dir }}/install-config.yaml"
            dest: "{{ bootstrap_dir }}/install-config.yaml"
 
-       - name: create append-bootstrap.ign
-         template:
-           src: "append-bootstrap.ign.j2"
-           dest: "{{ bootstrap_dir }}/append-bootstrap.ign"
+       #- name: create append-bootstrap.ign
+       #  template:
+       #    src: "append-bootstrap.ign.j2"
+       #    dest: "{{ bootstrap_dir }}/append-bootstrap.ign"
         
        - name: create openshift manifests
          command: 
@@ -38,8 +38,18 @@
        - name: copy machine config manifests to manifests dir
          copy:
            src: "{{ item }}"
-           dest: "{{ bootstrap_dir }}/manifests"
+           dest: "{{ bootstrap_dir }}/openshift"
          with_fileglob: "{{ base_dir }}/machine_config_manifests/*.yaml"
+
+       - name: remove machineset yamls
+         file:
+           path: "{{ bootstrap_dir }}/openshift/{{ item }}"
+           state: absent
+         with_items:
+           - 99_openshift-cluster-api_worker-machineset-0.yaml
+           - 99_openshift-cluster-api_master-machines-0.yaml
+           - 99_openshift-cluster-api_master-machines-1.yaml
+           - 99_openshift-cluster-api_master-machines-2.yaml
 
        - name: remove existing backup dir
          file:
@@ -53,39 +63,39 @@
         
        - name: copy manifests to backup dir
          copy:
-           src: "{{ item }}"
+           src: "{{ bootstrap_dir }}/"
            dest: "{{ base_dir }}/backup"
-         with_fileglob: "{{ bootstrap_dir }}/manifests/*.yaml"
+#         with_fileglob: "{{ bootstrap_dir }}/manifests/*.yaml"
 
        - name: create ignition configs
          command: 
            cmd: openshift-install create ignition-configs
            chdir: "{{ bootstrap_dir }}"
        
-       - set_fact:
-           bootstrap_append_ign_file: "{{ bootstrap_dir }}/append-bootstrap.ign"
-           master_ign_file: "{{ bootstrap_dir }}/master.ign"
-           worker_ign_file: "{{ bootstrap_dir }}/worker.ign"
-       
-       - set_fact:
-           bootstrap_ign_64: "{{ lookup('file', bootstrap_append_ign_file) | b64encode }}"
-           master_ign_64: "{{ lookup('file', master_ign_file) | b64encode }}"
-           worker_ign_64: "{{ lookup('file', worker_ign_file) | b64encode }}"
+#       - set_fact:
+#           bootstrap_append_ign_file: "{{ bootstrap_dir }}/append-bootstrap.ign"
+#           master_ign_file: "{{ bootstrap_dir }}/master.ign"
+#           worker_ign_file: "{{ bootstrap_dir }}/worker.ign"
+#       
+#       - set_fact:
+#           bootstrap_ign_64: "{{ lookup('file', bootstrap_append_ign_file) | b64encode }}"
+#           master_ign_64: "{{ lookup('file', master_ign_file) | b64encode }}"
+#           worker_ign_64: "{{ lookup('file', worker_ign_file) | b64encode }}"
   
-       - name: change bootstrap ignition url
-         command:
-           cmd: sed -i '/\#base64string/!b;n;c\ \ \ \ default = "'{{ bootstrap_ign_64 }}'"' ../terraform/bootstrap/variables.tf 
-           chdir: "{{ bootstrap_dir }}"
-
-       - name: change masters ignition url
-         command:
-           cmd: sed -i '/\#base64string/!b;n;c\ \ \ \ default = "'{{ master_ign_64 }}'"' ../terraform/masters/variables.tf 
-           chdir: "{{ bootstrap_dir }}"
-
-       - name: change workers ignition url
-         command:
-           cmd: sed -i '/\#base64string/!b;n;c\ \ \ \ default = "'{{ worker_ign_64 }}'"' ../terraform/workers/variables.tf 
-           chdir: "{{ bootstrap_dir }}"
+#       - name: change bootstrap ignition url
+#         command:
+#           cmd: sed -i '/\#base64string/!b;n;c\ \ \ \ default = "'{{ bootstrap_ign_64 }}'"' ../terraform/bootstrap/variables.tf 
+#           chdir: "{{ bootstrap_dir }}"
+#
+#       - name: change masters ignition url
+#         command:
+#           cmd: sed -i '/\#base64string/!b;n;c\ \ \ \ default = "'{{ master_ign_64 }}'"' ../terraform/masters/variables.tf 
+#           chdir: "{{ bootstrap_dir }}"
+#
+#       - name: change workers ignition url
+#         command:
+#           cmd: sed -i '/\#base64string/!b;n;c\ \ \ \ default = "'{{ worker_ign_64 }}'"' ../terraform/workers/variables.tf 
+#           chdir: "{{ bootstrap_dir }}"
    
   - hosts: lb
     tasks:
