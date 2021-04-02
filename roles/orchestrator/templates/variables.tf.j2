@@ -17,26 +17,26 @@ variable "rhcos_template" {
 }
 
 provider "vsphere" {
-  user           = {{ vsphere.user }}
-  password       = {{ vsphere.passwd }}
-  vsphere_server = {{ vsphere.server }}
+  user           = "{{ vsphere.user }}"
+  password       = "{{ vsphere.passwd }}"
+  vsphere_server = "{{ vsphere.server }}"
 
   # If you have a self-signed cert
   allow_unverified_ssl = true
 }
 
 data "vsphere_datacenter" "dc" {
-  name = {{ vsphere.datacenter_name }}
+  name = "{{ vsphere.datacenter_name }}"
 }
 
 data "vsphere_compute_cluster" "cluster" {
-  name          = {{ vsphere.cluster_name }}
+  name          = "{{ vsphere.cluster_name }}"
   datacenter_id = data.vsphere_datacenter.dc.id
 }
 
 
 data "vsphere_datastore" "datastore1" {
-  name          =  {{ vsphere.datastore_name }}
+  name          =  "{{ vsphere.datastore_name }}"
   datacenter_id = data.vsphere_datacenter.dc.id
 }
 

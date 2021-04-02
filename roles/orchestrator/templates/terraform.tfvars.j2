@@ -12,6 +12,6 @@ cluster_domain = "{{ domainname }}"
 
 ## Expects `openshift-install create ignition-configs` to have been run
 ## probably via generate-configs.sh
-bootstrap_ignition_path = "../../46/bootstrap/bootstrap.ign"
-master_ignition_path = "../../46/bootstrap/master.ign"
-worker_ignition_path = "../../46/bootstrap/worker.ign"
+bootstrap_ignition_path = "{{ base_dir }}/bootstrap/bootstrap.ign"
+master_ignition_path = "{{ base_dir }}/bootstrap/master.ign"
+worker_ignition_path = "{{ base_dir }}/bootstrap/worker.ign"

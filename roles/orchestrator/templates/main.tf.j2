@@ -10,7 +10,7 @@ data "vsphere_network" "api_network" {
 
 data "vsphere_network" "opflex_network" {
   name          = var.opflex_network_name
-  datacenter_id = "${data.vsphere_datacenter.dc.id}"
+  datacenter_id = data.vsphere_datacenter.dc.id
 }
 
 module "master" {
@@ -85,9 +85,5 @@ module "bootstrap" {
   mac_address  =  var.bootstrap_mac
   api_network_id = data.vsphere_network.api_network.id
 
-}
-
-output "ign" {
-   value = module.lb.ignition
 }
 
