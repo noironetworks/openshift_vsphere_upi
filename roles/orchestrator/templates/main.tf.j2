@@ -13,17 +13,12 @@ data "vsphere_network" "opflex_network" {
   datacenter_id = data.vsphere_datacenter.dc.id
 }
 
-resource "vsphere_folder" "folder" {
-  path          = var.folder
-  type          = "vm"
-  datacenter_id = data.vsphere_datacenter.dc.id
-}
 
 module "master" {
   source    = "../modules/nodes"
   count     = length(var.master_macs)
   name      = "${var.cluster_slug}-master${count.index + 1}"
-  folder    = vsphere_folder.folder.path
+  folder    = var.folder
   datastore = data.vsphere_datastore.datastore1.id
   disk_size = {{ masters_vars.disk_size_MB | default(40, true) }}
   memory    = {{ masters_vars.memory_KB | default(16384, true) }}
@@ -48,7 +43,7 @@ module "worker" {
   source    = "../modules/nodes"
   count     = length(var.worker_macs)
   name      = "${var.cluster_slug}-worker${count.index + 1}"
-  folder    = vsphere_folder.folder.path
+  folder    = var.folder
   datastore = data.vsphere_datastore.datastore1.id
   disk_size = {{ workers_vars.disk_size_MB | default(40, true) }}
   memory    = {{ workers_vars.memory_KB | default(16384, true) }}
@@ -73,7 +68,7 @@ module "bootstrap" {
   source    = "../modules/bootstrap"
   count     = "${var.bootstrap_complete ? 0 : 1}"
   name      = "${var.cluster_slug}-bootstrap"
-  folder    = vsphere_folder.folder.path
+  folder    = var.folder
   datastore = data.vsphere_datastore.datastore1.id
   disk_size = {{ bootstrap_vars.disk_size_MB | default(40, true) }}
   memory    = {{ bootstrap_vars.memory_KB | default(8192, true) }}
