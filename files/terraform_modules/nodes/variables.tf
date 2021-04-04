@@ -88,22 +88,3 @@ variable "opflex_network_id" {
   type    = string
 }
 
-#variable "machine_cidr" {
-#  type = string
-#}
-#
-#variable "gateway" {
-#  type = string
-#}
-#
-#variable "ipv4_address" {
-#  type = string
-#}
-#
-#variable "netmask" {
-#  type = string
-#}
-#
-#variable "dns_address" {
-#  type = string
-#}

@@ -4,6 +4,7 @@ worker_macs = {{ workers_api_mac_list | to_json }}
 
 api_network_name = "{{ node_net_port_group }}"
 opflex_network_name = "{{ aci_system_id }}"
+folder = "{{ vsphere.folder }}"
 
 ## Cluster configuration
 rhcos_template = "{{ vsphere.RHCOS_template_name }}"
