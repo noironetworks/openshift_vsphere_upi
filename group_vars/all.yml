@@ -74,6 +74,7 @@ vsphere:
    cluster_name: hypflex-cluster
    datastore_name: noiro
    RHCOS_template_name: RHCOS456
+   folder: /
 
 #base_dir
 #  type: directory path

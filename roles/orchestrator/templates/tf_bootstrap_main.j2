@@ -3,7 +3,7 @@ resource "vsphere_virtual_machine" "bootstrap" {
   name             = "{{ dlist[0] }}.bootstrap"
   resource_pool_id = "${data.vsphere_compute_cluster.cluster.resource_pool_id}"
   datastore_id     = "${data.vsphere_datastore.datastore1.id}"
-  folder           = ""
+  folder           = "{{ vsphere.folder }}"
   count            = 1
 
   num_cpus = {{ bootstrap_vars.cpu_count | default(4, true) }}

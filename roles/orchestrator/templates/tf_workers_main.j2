@@ -3,7 +3,7 @@ resource "vsphere_virtual_machine" "workers" {
   name             = "{{ dlist[0] }}.worker${count.index + 1}"
   resource_pool_id = "${data.vsphere_compute_cluster.cluster.resource_pool_id}"
   datastore_id     = "${data.vsphere_datastore.datastore1.id}"
-  folder           = ""
+  folder           = "{{ vsphere.folder }}"
   count            = length(var.worker_api_macs)
   wait_for_guest_net_timeout = -1
 
