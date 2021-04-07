@@ -65,6 +65,7 @@ default_aci_manifests_archive: aci_manifests.tar.gz
 opflex_interface_mtu: 1800
 
 #vsphere 
+#   folder parameter should not be blank, default is set to root
 vsphere:
    server: hypf-vc65.noiro.lab
    user: administrator@vsphere.local
@@ -74,6 +75,7 @@ vsphere:
    cluster_name: hypflex-cluster
    datastore_name: noiro
    RHCOS_template_name: RHCOS443
+   folder: / 
 
 #base_dir
 #  type: directory path
