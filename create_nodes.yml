@@ -6,7 +6,7 @@
 
        - name: create nodes
          command:
-           cmd: terraform apply --auto-approve -no-color
+           cmd: terraform apply --auto-approve -no-color -parallelism=1
            chdir: "{{ terraform_dir }}"
 
        - name: setup cron job to auto approve csr
