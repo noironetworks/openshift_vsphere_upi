@@ -1,10 +1,17 @@
-bootstrap_mac = "{{ bootstrap_vars.node_mac }}"
-master_macs = {{ masters_api_mac_list | to_json }}
-worker_macs = {{ workers_api_mac_list | to_json }}
+bootstrap_ip = "{{ bootstrap_vars.node_ip }}"
+master_ips = {{ masters_api_ip_list | to_json }}
+worker_ips = {{ workers_api_ip_list | to_json }}
 
 api_network_name = "{{ node_net_port_group }}"
 opflex_network_name = "{{ aci_system_id }}"
 folder = "{{ vsphere.folder }}"
+
+machine_cidr = "{{ node_network_cidr }}"
+local_dns = "{{ loadbalancer_ip }}"
+gateway = "{{ node_network_gateway }}"
+netmask = "{{ node_network_netmask }}"
+
+infravlan = "{{ aci_infra_vlan }}"
 
 ## Cluster configuration
 rhcos_template = "{{ vsphere.RHCOS_template_name }}"

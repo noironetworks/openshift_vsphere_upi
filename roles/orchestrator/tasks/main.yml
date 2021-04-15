@@ -56,36 +56,6 @@
      - "{{ base_dir }}/terraform"
   environment: "{{ proxy_env }}"
 
-#- name: Create opflex interface config file
-#  template:
-#     src: ifcfg-ens224.cfg.j2
-#     dest: "{{ base_dir }}/machine_config_manifests/ifcfg-ens224"
-#
-#- name: Create opflex interface, infra vlan encap config file
-#  template:
-#     src: ifcfg-opflex.cfg.j2
-#     dest: "{{ base_dir }}/machine_config_manifests/ifcfg-opflex"
-#     
-#- name: create multicast opflex route config file
-#  template:
-#     src: opflex-route.j2
-#     dest: "{{ base_dir }}/machine_config_manifests/opflex-route"
-#
-- set_fact:
-     ens224_content: "{{ lookup('template', 'ifcfg-ens224.cfg.j2') }}"
-     opflex_content: "{{ lookup('template', 'ifcfg-opflex.cfg.j2') }}"
-     opflex_route_content: "{{ lookup('template', 'route-opflex.j2') }}"
-
-- name: create Master machine config operator
-  template: 
-     src: master_config_operator.yml.j2
-     dest: "{{ base_dir }}/machine_config_manifests/99-masters-opflex-interface-configuration.yaml"
-
-- name: create worker machine config operator
-  template: 
-     src: worker_config_operator.yml.j2
-     dest: "{{ base_dir }}/machine_config_manifests/99-workers-opflex-interface-configuration.yaml"
-
 - name: create openshift install config file
   template:
      src: "install-config.yaml.j2"
