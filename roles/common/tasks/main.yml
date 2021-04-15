@@ -114,14 +114,6 @@
   with_dict: "{{ workers_vars.nodes }}"
 
 - set_fact:
-     masters_api_mac_list: "{{ masters_api_mac_list | default([])}} + ['{{ item.value.api_mac }}']"
-  with_dict: "{{ masters_vars.nodes }}"
-
-- set_fact:
-     workers_api_mac_list: "{{ workers_api_mac_list | default([])}} + ['{{ item.value.api_mac }}']"
-  with_dict: "{{ workers_vars.nodes }}"
-
-- set_fact:
      rarpa_str: "{{ '.'.join(machine_network.split('.')[::-1][1:4]) }}.in-addr.arpa"
 
 - set_fact:
