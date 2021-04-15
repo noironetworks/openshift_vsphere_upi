@@ -76,21 +76,6 @@ variable "cluster_domain" {
   type = string
 }
 
-variable "bootstrap_mac" {
-  type = string
-  default = ""
-}
-
-variable "master_macs" {
-  type = list(string)
-  default = []
-}
-
-variable "worker_macs" {
-  type = list(string)
-  default = []
-}
-
 variable "api_network_name" {
   type    = string
 }
@@ -100,5 +85,40 @@ variable "opflex_network_name" {
 }
 
 variable "folder" {
+  type = string
+}
+
+variable "bootstrap_ip" {
+  type = string
+  default = ""
+}
+
+variable "master_ips" {
+  type = list(string)
+  default = []
+}
+
+variable "worker_ips" {
+  type = list(string)
+  default = []
+}
+
+variable "machine_cidr" {
+  type = string
+}
+
+variable "gateway" {
+  type = string
+}
+
+variable "local_dns" {
+  type = string
+}
+
+variable "netmask" {
+  type = string
+}
+
+variable "infravlan" {
   type = string
 }

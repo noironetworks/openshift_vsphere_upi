@@ -56,46 +56,26 @@ variable "cluster_domain" {
   type = string
 }
 
-variable "mac_address" {
-  type = string
-  default = ""
-}
-
-variable "bootstrap_mac" {
-  type = string
-  default = ""
-}
-
-variable "master_macs" {
-  type = list(string)
-  default = []
-}
-
-variable "worker_macs" {
-  type = list(string)
-  default = []
-}
-
 variable "api_network_id" {
   type    = string
 }
 
-#variable "machine_cidr" {
-#  type = string
-#}
-#
-#variable "gateway" {
-#  type = string
-#}
-#
-#variable "ipv4_address" {
-#  type = string
-#}
-#
-#variable "netmask" {
-#  type = string
-#}
-#
-#variable "dns_address" {
-#  type = string
-#}
+variable "machine_cidr" {
+  type = string
+}
+
+variable "gateway" {
+  type = string
+}
+
+variable "ipv4_address" {
+  type = string
+}
+
+variable "netmask" {
+  type = string
+}
+
+variable "dns_address" {
+  type = string
+}

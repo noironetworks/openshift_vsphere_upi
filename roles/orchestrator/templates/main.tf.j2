@@ -16,7 +16,7 @@ data "vsphere_network" "opflex_network" {
 
 module "master" {
   source    = "../modules/nodes"
-  count     = length(var.master_macs)
+  count     = length(var.master_ips)
   name      = "${var.cluster_slug}-master${count.index + 1}"
   folder    = var.folder
   datastore = data.vsphere_datastore.datastore1.id
@@ -33,15 +33,22 @@ module "master" {
   adapter_type = data.vsphere_virtual_machine.template.network_interface_types[0]
 
   cluster_domain = var.cluster_domain
-  mac_address    = var.master_macs[count.index]
   api_network_id = data.vsphere_network.api_network.id
   opflex_network_id = data.vsphere_network.opflex_network.id
+
+  machine_cidr   = var.machine_cidr
+  dns_address    = var.local_dns
+  gateway        = var.gateway
+  ipv4_address   = var.master_ips[count.index]
+  netmask        = var.netmask
+
+  infravlan      = var.infravlan
 }
 
 
 module "worker" {
   source    = "../modules/nodes"
-  count     = length(var.worker_macs)
+  count     = length(var.worker_ips)
   name      = "${var.cluster_slug}-worker${count.index + 1}"
   folder    = var.folder
   datastore = data.vsphere_datastore.datastore1.id
@@ -58,10 +65,16 @@ module "worker" {
   adapter_type = data.vsphere_virtual_machine.template.network_interface_types[0]
 
   cluster_domain = var.cluster_domain
-  mac_address = var.worker_macs[count.index]
   api_network_id = data.vsphere_network.api_network.id
   opflex_network_id = data.vsphere_network.opflex_network.id
 
+  machine_cidr   = var.machine_cidr
+  dns_address    = var.local_dns
+  gateway        = var.gateway
+  ipv4_address   = var.worker_ips[count.index]
+  netmask        = var.netmask
+
+  infravlan      = var.infravlan
 }
 
 module "bootstrap" {
@@ -83,8 +96,12 @@ module "bootstrap" {
   adapter_type = data.vsphere_virtual_machine.template.network_interface_types[0]
 
   cluster_domain = var.cluster_domain
-  mac_address  =  var.bootstrap_mac
   api_network_id = data.vsphere_network.api_network.id
 
+  machine_cidr   = var.machine_cidr
+  dns_address    = var.local_dns
+  gateway        = var.gateway
+  ipv4_address   = var.bootstrap_ip
+  netmask        = var.netmask
 }
 

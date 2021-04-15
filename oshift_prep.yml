@@ -35,12 +35,6 @@
            dest: "{{ bootstrap_dir }}/manifests"
          with_fileglob: "{{ base_dir }}/aci_manifests/*.yaml"
 
-       - name: copy machine config manifests to manifests dir
-         copy:
-           src: "{{ item }}"
-           dest: "{{ bootstrap_dir }}/openshift"
-         with_fileglob: "{{ base_dir }}/machine_config_manifests/*.yaml"
-
        - name: remove machineset yamls
          file:
            path: "{{ bootstrap_dir }}/openshift/{{ item }}"

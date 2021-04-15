@@ -50,7 +50,6 @@
      - "{{ base_dir }}"
      - "{{ base_dir }}/terraform"
      - "{{ base_dir }}/aci_manifests"
-     - "{{ base_dir }}/machine_config_manifests"
   connection: local
 
 - name: create terraform modules dir
