@@ -7,6 +7,14 @@
      name:
         - dhcp
      state: latest
+  when: ansible_distribution == "RedHat" and ansible_distribution_major_version | int == 7
+
+- name: install dhcp package
+  package:
+     name:
+        - dhcp-server
+     state: latest
+  when: ansible_distribution == "RedHat" and ansible_distribution_major_version | int == 8
 
 - name: setup dhcpd.conf
   template:
