@@ -55,10 +55,26 @@ This VM will be configured as loadbalancer for the openshift cluster.
 * Run setup playbook to configure this VM and the loadbalancer. `ansible-playbook setup.yml`
   
 * Run oshift_prep playbook to generate openshift manifests and ignition files. `ansible-playbook oshift_prep.yml`
+
+* Create folder in Vmware with the name of the infraID, obtained with the command below:
+
+  `jq -r .infraID <installation_directory>/metadata.json `
   
 * Run create_nodes playbook to bring up the cluster. This playbook creates the bootstrap node, master and worker nodes. `ansible-playbook create_nodes.yml`
   
 At this point, cluster creation has started, if auto_approve_csr option was not enabled, monitor the csr's pending and approve them for cluster creation to progress.
+
+IMPORTANT:
+
+Before adding workloads to the cluster, perform the procedures below on the worker VM's so that we don't have problems with volume provisioning in the pods.
+
+Edit settings → VM Options → Advanced.
+
+Optional: In the event of cluster performance issues, from the Latency Sensitivity list, select High.
+
+Click Edit Configuration, and on the Configuration Parameters window, click Add Configuration Params. Define the following parameter names and values:
+
+`disk.EnableUUID: Specify TRUE.`
 
 ## Delete  
 To delete the cluser, use delete_nodes playbook.
