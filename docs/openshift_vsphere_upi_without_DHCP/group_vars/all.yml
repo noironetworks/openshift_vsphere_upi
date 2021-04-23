@@ -1,0 +1,157 @@
+#provision_dhcp
+#   type: boolean, True or False
+#   required: yes
+#   notes: If set to true, load balancer is configured as dhcp server.
+#          If false, it is assumed that the dhcp server pre-exists
+provision_dhcp: False
+
+#Network configuration for deploing a cluster when DHCP is desabled.
+network_vars:
+  netmask: 255.255.0.0
+  dns: 10.105.0.101
+  gateway: 10.105.0.1
+  interface: ens192
+
+#domainname
+#   type: string,
+#   required: yes
+domainname: ocp-aci.lab
+
+#provision_dns
+#   type: boolean, True or False
+#   required: yes
+#   notes: If set to true, load balancer is configured as dns server.
+#          If false, it is assumed that the dns server pre-exists.
+provision_dns: True
+
+#dns_forwarder:
+#   type: ip address
+#   required: yes
+#   notes: This value is used when setting up a dhcp service and also for 'forwarders' value in dns configuration.
+dns_forwarder: 8.8.8.8
+
+#loadbalancer_ip:
+#   type: ip address or resolvable hostname
+#   required: yes
+#   notes: this host is configured as load balancer for cluster and also as dhcp and dns server if required
+loadbalancer_ip: 10.105.0.101
+
+#auto_approve_csr:
+#   type: boolean
+#   required: yes
+#   notes: when set to true, sets up a cron job to auto approve openshift csr
+auto_approve_csr: True
+
+#proxy_env
+#
+proxy_env:
+  #donot remove dummy field, irrespective of whether setup needs a proxy or not.
+  dummy: dummy
+  #set the http/https proxy server, if setup does not need proxy, comment the below values.
+  #these values are used for ansible tasks and also passed on to openshift installer
+  #http_proxy: http://proxy.esl.cisco.com:80
+  #https_proxy: http://proxy.esl.cisco.com:80
+  #no_proxy: 10.30.120.6,10.30.120.20,noiro-quay.cisco.com
+
+#packages
+#  defines the urls to download terraform, openshift client and openshift-install tools from.
+packages:
+  validate_certs: False
+  terraform_url: https://releases.hashicorp.com/terraform/0.12.26/terraform_0.12.26_linux_amd64.zip
+  openshift_client_linux_url: https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/ocp/4.6.0/openshift-client-linux-4.6.0.tar.gz
+  openshift_install_linux_url: https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/ocp/4.6.0/openshift-install-linux-4.6.0.tar.gz
+
+#default_aci_manifests_archive:
+#  default filename that is searched under files directory.
+#  this can be overridden by passing extra parameter aci_manifests_archive on ansible command line
+default_aci_manifests_archive: manifests.tar.gz
+
+#opflex_interface_mtu:
+# required: yes
+# MTU size for interface connected to fabric, must be greater than 1564
+opflex_interface_mtu: 1800
+
+#vsphere
+vsphere:
+  server: vmware.dispositivos.com.br
+  user: ocpaci@ocp-aci.lab
+  passwd: ocpaci
+  allow_unverified_ssl: true
+  datacenter_name: SDN-SEDE
+  cluster_name: SDN
+  datastore_name: "198.47"
+  RHCOS_template_name: rhcos46
+
+#base_dir
+#  type: directory path
+#  required: yes
+#  notes: All install files and directories are created under this directory
+base_dir: /root/ocpinstall
+
+#bootstrap node variables
+bootstrap_vars:
+  node_mac: 00:50:56:b2:c7:a1 #required
+  node_ip: 10.105.0.103 #required
+  cpu_count: 8 #optional: defaults to 4
+  memory_KB: 16384 #optional: defaults to 8192
+  disk_size_MB: 40 #optional: defaults to 40
+
+masters_vars:
+  cpu_count: 8 #optional: defaults to 4
+  memory_KB: 16384 #optional: defaults to 16384
+  disk_size_MB: 40 #optional: defaults to 40
+  nodes:
+    #mac address and ip address for each node is required
+    - master-1:
+        api_mac: 00:50:56:b2:c7:b1
+        ip: 10.105.0.104
+    - master-2:
+        api_mac: 00:50:56:b2:c7:b3
+        ip: 10.105.0.105
+    - master-3:
+        api_mac: 00:50:56:b2:c7:b5
+        ip: 10.105.0.106
+
+workers_vars:
+  cpu_count: 8 #optional: defaults to 4
+  memory_KB: 16384 #optional: defaults to 16384
+  disk_size_MB: 40 #optional: defaults to 40
+  nodes:
+    #mac address and ip address for each node is required
+    - worker-1:
+        api_mac: 00:50:56:b2:c7:c1
+        ip: 10.105.0.107
+    - worker-2:
+        api_mac: 00:50:56:b2:c7:c3
+        ip: 10.105.0.108
+
+#user_ssh_key:
+#  required: no
+#  notes: if specified this key is setup on nodes, else ssh key of current
+#        user is used.
+user_ssh_key: ssh-rsa ...
+
+#additional_trust_bundle:
+#  required: no
+#  notes: use this field to add a certificate for private repository
+#
+# example:
+#additional_trust_bundle: |
+#   -----BEGIN CERTIFICATE-----
+#   MIIDDDCCAfQCCQDuOnV7XBjpODANBgkqhkiG9w0BAQsFADBIMQswCQYDVQQGEwJV
+#   UzELMAkGA1UECAwCQ0ExDDAKBgNVBAcMA1NKQzEOMAwGA1UECgwFQ2lzY28xDjAM
+#  -----END CERTIFICATE-----
+
+#openshift_pullsecret:
+#  required: yes
+#  notes: refer to https://cloud.redhat.com/openshift/install/pull-secret
+#  example:
+#    openshift_pullsecret: {"auths":{"cloud.openshift.com":{"auth":.........}
+openshift_pullsecret:
+  {
+    "auths":
+      {
+        "cloud.openshift.com":
+         ...
+      },
+  }

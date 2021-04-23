@@ -1,0 +1,23 @@
+---
+  - hosts: orchestrator
+    tasks:
+       - set_fact:
+           terraform_dir: "{{ base_dir }}/terraform"
+
+       - name: create nodes
+         command:
+           cmd: terraform apply --auto-approve -no-color
+           chdir: "{{ terraform_dir }}/{{ item }}"
+         with_items:
+           - bootstrap
+           - masters
+           - workers
+
+       - name: setup cron job to auto approve csr
+         cron:
+           name: approve_csr
+           #user: root
+           minute: "0,5,15,25,35,45,55"
+           job: "KUBECONFIG={{ base_dir }}/bootstrap/auth/kubeconfig /usr/local/bin/oc get csr -o name | KUBECONFIG={{ base_dir }}/bootstrap/auth/kubeconfig xargs /usr/local/bin/oc adm certificate approve"
+           #cron_file: approve_csr
+         when: auto_approve_csr == True

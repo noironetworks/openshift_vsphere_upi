@@ -1,0 +1,11 @@
+---
+
+- name: disable selinux
+  selinux:
+     state: disabled
+  register: selinux
+
+- name: reboot if selinux changed
+  reboot:
+  when: selinux.changed
+

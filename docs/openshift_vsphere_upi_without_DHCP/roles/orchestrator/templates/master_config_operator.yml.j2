@@ -1,0 +1,38 @@
+apiVersion: machineconfiguration.openshift.io/v1
+kind: MachineConfig
+metadata:
+  labels:
+    machineconfiguration.openshift.io/role: master
+  name: masters-opflex-configuration
+spec:
+  config:
+    ignition:
+      config: {}
+      security:
+        tls: {}
+      timeouts: {}
+      version: 2.2.0
+    networkd: {}
+    passwd: {}
+    storage: 
+      files:
+        - filesystem: root
+          path: /etc/sysconfig/network-scripts/ifcfg-ens224
+          mode: 420
+          contents: 
+             source: data:text/plain;charset=utf-8;base64,{{ ens224_content | b64encode }}
+             verification: {}
+        - filesystem: root
+          path: /etc/sysconfig/network-scripts/ifcfg-opflex
+          mode: 420
+          contents:
+             source: data:text/plain;charset=utf-8;base64,{{ opflex_content | b64encode }}
+             verification: {}
+        - filesystem: root
+          path: /etc/sysconfig/network-scripts/route-opflex
+          mode: 420
+          contents:
+             source: data:text/plain;charset=utf-8;base64,{{ opflex_route_content | b64encode }}
+             verification: {}
+  osImageURL: ""
+  osImageURL: ""
