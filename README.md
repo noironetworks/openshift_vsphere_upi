@@ -3,7 +3,7 @@
 Ansible playbooks for installing Openshift on Vmware user provisioned infrastructure with ACI-CNI plugin.
 This document is for Openshift version 4.6 and CoreOS 4.6. If you are installing Openshift version 4.5 please refer to ocp45 branch
 
-If you have restrictions on the use of DHCP in your environment, access this directory (Docs -> openshift_vsphere_upi_without_DHCP) to provide this integration without DHCP, using VMware's "guestinfo.afterburn.initrd.network-kargs".
+If you have restrictions on the use of DHCP in your environment, access this directory (Docs -> openshift_vsphere_upi_without_DHCP) to provide this integration without DHCP, using VMware's guestinfo.afterburn.initrd.network-kargs.
 
 ## Step 1 - acc-provision
 * Provision ACI fabric using acc-provision utility. 
