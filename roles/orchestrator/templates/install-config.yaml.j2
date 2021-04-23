@@ -31,7 +31,7 @@ networking:
   machineNetwork:
   - cidr: {{ machine_network_cidr }}
   serviceNetwork:
-  - 172.30.0.0/25
+  - 172.30.0.0/16
 platform:
   vsphere:
     vcenter: {{ vsphere.server }}

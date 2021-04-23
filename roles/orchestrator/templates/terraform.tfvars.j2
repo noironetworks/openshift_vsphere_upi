@@ -1,0 +1,25 @@
+bootstrap_ip = "{{ bootstrap_vars.node_ip }}"
+master_ips = {{ masters_api_ip_list | to_json }}
+worker_ips = {{ workers_api_ip_list | to_json }}
+
+api_network_name = "{{ node_net_port_group }}"
+opflex_network_name = "{{ aci_system_id }}"
+folder = "{{ vsphere.folder }}"
+
+machine_cidr = "{{ node_network_cidr }}"
+local_dns = "{{ loadbalancer_ip }}"
+gateway = "{{ node_network_gateway }}"
+netmask = "{{ node_network_netmask }}"
+
+infravlan = "{{ aci_infra_vlan }}"
+
+## Cluster configuration
+rhcos_template = "{{ vsphere.RHCOS_template_name }}"
+cluster_slug = "{{ aci_system_id }}"
+cluster_domain = "{{ domainname }}"
+
+## Expects `openshift-install create ignition-configs` to have been run
+## probably via generate-configs.sh
+bootstrap_ignition_path = "{{ base_dir }}/bootstrap/bootstrap.ign"
+master_ignition_path = "{{ base_dir }}/bootstrap/master.ign"
+worker_ignition_path = "{{ base_dir }}/bootstrap/worker.ign"

@@ -1,0 +1,107 @@
+data "vsphere_virtual_machine" "template" {
+  name          = var.rhcos_template
+  datacenter_id = data.vsphere_datacenter.dc.id
+}
+
+data "vsphere_network" "api_network" {
+  name          = var.api_network_name
+  datacenter_id = data.vsphere_datacenter.dc.id
+}
+
+data "vsphere_network" "opflex_network" {
+  name          = var.opflex_network_name
+  datacenter_id = data.vsphere_datacenter.dc.id
+}
+
+
+module "master" {
+  source    = "../modules/nodes"
+  count     = length(var.master_ips)
+  name      = "${var.cluster_slug}-master${count.index + 1}"
+  folder    = var.folder
+  datastore = data.vsphere_datastore.datastore1.id
+  disk_size = {{ masters_vars.disk_size_MB | default(40, true) }}
+  memory    = {{ masters_vars.memory_KB | default(16384, true) }}
+  num_cpu   = {{ masters_vars.cpu_count | default(4, true) }}
+  ignition  = file(var.master_ignition_path)
+
+  resource_pool_id = data.vsphere_compute_cluster.cluster.resource_pool_id
+  guest_id         = data.vsphere_virtual_machine.template.guest_id
+  template         = data.vsphere_virtual_machine.template.id
+  thin_provisioned = data.vsphere_virtual_machine.template.disks.0.thin_provisioned
+
+  adapter_type = data.vsphere_virtual_machine.template.network_interface_types[0]
+
+  cluster_domain = var.cluster_domain
+  api_network_id = data.vsphere_network.api_network.id
+  opflex_network_id = data.vsphere_network.opflex_network.id
+
+  machine_cidr   = var.machine_cidr
+  dns_address    = var.local_dns
+  gateway        = var.gateway
+  ipv4_address   = var.master_ips[count.index]
+  netmask        = var.netmask
+
+  infravlan      = var.infravlan
+}
+
+
+module "worker" {
+  source    = "../modules/nodes"
+  count     = length(var.worker_ips)
+  name      = "${var.cluster_slug}-worker${count.index + 1}"
+  folder    = var.folder
+  datastore = data.vsphere_datastore.datastore1.id
+  disk_size = {{ workers_vars.disk_size_MB | default(40, true) }}
+  memory    = {{ workers_vars.memory_KB | default(16384, true) }}
+  num_cpu   = {{ workers_vars.cpu_count | default(4, true) }}
+  ignition  = file(var.worker_ignition_path)
+
+  resource_pool_id = data.vsphere_compute_cluster.cluster.resource_pool_id
+  guest_id         = data.vsphere_virtual_machine.template.guest_id
+  template         = data.vsphere_virtual_machine.template.id
+  thin_provisioned = data.vsphere_virtual_machine.template.disks.0.thin_provisioned
+
+  adapter_type = data.vsphere_virtual_machine.template.network_interface_types[0]
+
+  cluster_domain = var.cluster_domain
+  api_network_id = data.vsphere_network.api_network.id
+  opflex_network_id = data.vsphere_network.opflex_network.id
+
+  machine_cidr   = var.machine_cidr
+  dns_address    = var.local_dns
+  gateway        = var.gateway
+  ipv4_address   = var.worker_ips[count.index]
+  netmask        = var.netmask
+
+  infravlan      = var.infravlan
+}
+
+module "bootstrap" {
+  source    = "../modules/bootstrap"
+  count     = "${var.bootstrap_complete ? 0 : 1}"
+  name      = "${var.cluster_slug}-bootstrap"
+  folder    = var.folder
+  datastore = data.vsphere_datastore.datastore1.id
+  disk_size = {{ bootstrap_vars.disk_size_MB | default(40, true) }}
+  memory    = {{ bootstrap_vars.memory_KB | default(8192, true) }}
+  num_cpu   = {{ bootstrap_vars.cpu_count | default(4, true) }}
+  ignition  = file(var.bootstrap_ignition_path)
+
+  resource_pool_id = data.vsphere_compute_cluster.cluster.resource_pool_id
+  guest_id         = data.vsphere_virtual_machine.template.guest_id
+  template         = data.vsphere_virtual_machine.template.id
+  thin_provisioned = data.vsphere_virtual_machine.template.disks.0.thin_provisioned
+
+  adapter_type = data.vsphere_virtual_machine.template.network_interface_types[0]
+
+  cluster_domain = var.cluster_domain
+  api_network_id = data.vsphere_network.api_network.id
+
+  machine_cidr   = var.machine_cidr
+  dns_address    = var.local_dns
+  gateway        = var.gateway
+  ipv4_address   = var.bootstrap_ip
+  netmask        = var.netmask
+}
+

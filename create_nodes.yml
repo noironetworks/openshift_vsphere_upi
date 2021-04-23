@@ -6,12 +6,8 @@
 
        - name: create nodes
          command:
-           cmd: terraform apply --auto-approve -no-color
-           chdir: "{{ terraform_dir }}/{{ item }}"
-         with_items:
-           - bootstrap
-           - masters
-           - workers
+           cmd: terraform apply --auto-approve -no-color -parallelism=1
+           chdir: "{{ terraform_dir }}"
 
        - name: setup cron job to auto approve csr
          cron:

@@ -49,12 +49,19 @@
   with_items:
      - "{{ base_dir }}"
      - "{{ base_dir }}/terraform"
-     - "{{ base_dir }}/terraform/bootstrap"
-     - "{{ base_dir }}/terraform/masters"
-     - "{{ base_dir }}/terraform/workers"
      - "{{ base_dir }}/aci_manifests"
-     - "{{ base_dir }}/machine_config_manifests"
   connection: local
+
+- name: create terraform modules dir
+  file:
+     path: "{{ base_dir }}/modules"
+     state: directory
+     mode: 0775
+
+- name: copy terraform modules
+  copy:
+     src: "{{ playbook_dir }}/files/terraform_modules/"
+     dest: "{{ base_dir }}/modules"
 
 - name: Unarchive aci manifests
   unarchive:
@@ -75,9 +82,17 @@
 
 - name: install python-netaddr
   package:
+     name: python3-netaddr
+     state: latest
+  connection: local
+  when: ansible_python['version']['major'] == 3
+
+- name: install python-netaddr
+  package:
      name: python-netaddr
      state: latest
   connection: local
+  when: ansible_python['version']['major'] == 2
 
 - include_vars:
      file: "{{ base_dir }}/aci_manifests/apic.json"
@@ -104,14 +119,6 @@
 
 - set_fact:
      workers_api_ip_list: "{{ workers_api_ip_list | default([])}} + ['{{ item.value.ip }}']"
-  with_dict: "{{ workers_vars.nodes }}"
-
-- set_fact:
-     masters_api_mac_list: "{{ masters_api_mac_list | default([])}} + ['{{ item.value.api_mac }}']"
-  with_dict: "{{ masters_vars.nodes }}"
-
-- set_fact:
-     workers_api_mac_list: "{{ workers_api_mac_list | default([])}} + ['{{ item.value.api_mac }}']"
   with_dict: "{{ workers_vars.nodes }}"
 
 - set_fact:
