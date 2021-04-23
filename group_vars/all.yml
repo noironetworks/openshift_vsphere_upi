@@ -43,10 +43,10 @@ proxy_env:
 #  defines the urls to download terraform, openshift client and openshift-install tools from.
 packages:
    validate_certs: False
-   terraform_url: https://releases.hashicorp.com/terraform/0.12.26/terraform_0.12.26_linux_amd64.zip
-   openshift_client_linux_url: https://mirror.openshift.com/pub/openshift-v4/clients/ocp/4.4.26/openshift-client-linux-4.4.26.tar.gz
-   openshift_install_linux_url: https://mirror.openshift.com/pub/openshift-v4/clients/ocp/4.4.26/openshift-install-linux-4.4.26.tar.gz
-
+   terraform_url: https://releases.hashicorp.com/terraform/0.13.6/terraform_0.13.6_linux_amd64.zip
+   openshift_client_linux_url: https://mirror.openshift.com/pub/openshift-v4/clients/ocp/4.6.21/openshift-client-linux-4.6.21.tar.gz
+   openshift_install_linux_url: https://mirror.openshift.com/pub/openshift-v4/clients/ocp/4.6.21/openshift-install-linux-4.6.21.tar.gz
+   
 #default_aci_manifests_archive:
 #  default filename that is searched under files directory.
 #  this can be overridden by passing extra parameter aci_manifests_archive on ansible command line
@@ -67,7 +67,7 @@ vsphere:
    datacenter_name: hypflex-dc
    cluster_name: hypflex-cluster
    datastore_name: noiro
-   RHCOS_template_name: RHCOS443
+   RHCOS_template_name: RHCOS468
    folder: / 
 
 #base_dir
