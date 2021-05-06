@@ -12,13 +12,23 @@ data "ignition_file" "hostname" {
   }
 }
 
+data "ignition_file" "opflexroute" {
+  path = "/etc/NetworkManager/dispatcher.d/80-opflex-route"
+  mode = "493"
+  content  {
+     content = "#!/bin/bash\n if [ \"$1\" == \"ens224.${var.infravlan}\" ] && [ \"$2\" == \"up\" ]; then \n route add -net 224.0.0.0 netmask 240.0.0.0 dev ens224.3901 \n fi\n"
+
+  }
+}
+
 data "ignition_config" "vm" {
 
   merge {
     source = local.ignition_encoded
   }
   files = [
-    data.ignition_file.hostname.rendered
+    data.ignition_file.hostname.rendered,
+    data.ignition_file.opflexroute.rendered
   ]
 }
 
