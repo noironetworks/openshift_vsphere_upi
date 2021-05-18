@@ -1,0 +1,47 @@
+{% set dlist = domainname.split('.') %}
+resource "vsphere_virtual_machine" "workers" {
+  name             = "{{ dlist[0] }}.worker${count.index + 1}"
+  resource_pool_id = "${data.vsphere_compute_cluster.cluster.resource_pool_id}"
+  datastore_id     = "${data.vsphere_datastore.datastore1.id}"
+  folder           = ""
+  count            = length(var.worker_api_macs)
+  wait_for_guest_net_timeout = -1
+
+  num_cpus = {{ workers_vars.cpu_count | default(4, true) }}
+  memory   = {{ workers_vars.memory_KB | default(16384, true) }}
+  guest_id = "${data.vsphere_virtual_machine.RHCOS_template.guest_id}"
+
+  network_interface {
+    network_id   = "${data.vsphere_network.network_api.id}"
+    adapter_type = "${data.vsphere_virtual_machine.RHCOS_template.network_interface_types[0]}"
+    use_static_mac = true
+    mac_address = "${var.worker_api_macs[count.index]}"
+  }
+
+  network_interface {
+    network_id   = "${data.vsphere_network.network_opflex.id}"
+    adapter_type = "${data.vsphere_virtual_machine.RHCOS_template.network_interface_types[0]}"
+    use_static_mac = false
+  }
+
+  disk {
+    label            = "disk0"
+    size             = "{{ workers_vars.disk_size_MB | default(40, true) }}"
+    thin_provisioned = "${data.vsphere_virtual_machine.RHCOS_template.disks.0.thin_provisioned}"
+    eagerly_scrub    = "${data.vsphere_virtual_machine.RHCOS_template.disks.0.eagerly_scrub}"
+  }
+
+  clone {
+    template_uuid = "${data.vsphere_virtual_machine.RHCOS_template.id}"
+  }
+
+  vapp {
+    properties = {
+    "guestinfo.ignition.config.data"          = "${var.worker_ignition_url}"
+    "guestinfo.ignition.config.data.encoding" = "base64"
+    } 
+ }
+ extra_config = {
+   "guestinfo.afterburn.initrd.network-kargs" = "ip=${var.worker_api_ips[count.index]}::{{ network_vars.gateway }}:{{ network_vars.netmask }}:worker${count.index + 1}:{{ network_vars.interface }}:none nameserver={{ network_vars.dns }}"
+ }
+}

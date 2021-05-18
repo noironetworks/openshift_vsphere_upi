@@ -1,0 +1,63 @@
+---
+  - hosts: orchestrator
+    gather_facts: false
+    tasks:
+       - assert:
+           that:
+             - ( {{ item }} is defined) and ({{ item }} is not none) and ({{ item }}|length > 0)
+           fail_msg: "'{{ item }}' value is not set or empty"
+         with_items:
+           - base_dir
+           - dns_forwarder
+           - loadbalancer_ip
+           - packages.terraform_url
+           - packages.openshift_client_linux_url
+           - packages.openshift_install_linux_url
+           - vsphere.server
+           - vsphere.user
+           - vsphere.passwd
+           - vsphere.datacenter_name
+           - vsphere.cluster_name
+           - vsphere.datastore_name
+           - vsphere.RHCOS_template_name
+           - openshift_pullsecret
+           - domainname
+
+       - assert:
+           that:
+             - (bootstrap_vars.node_mac is defined) and (bootstrap_vars.node_mac is not none) and (bootstrap_vars.node_mac | hwaddr)
+           fail_msg: "'bootstrap_vars.node_mac' value is not set or not valid mac"
+           success_msg: "'bootstrap_vars.node_mac' value is valid"
+        
+       - assert:
+           that:
+             - (bootstrap_vars.node_ip is defined) and (bootstrap_vars.node_ip is not none) and (bootstrap_vars.node_ip | ipaddr)
+           fail_msg: "'bootstrap_vars.node_ip' value is not set or not valid mac"
+           success_msg: "'bootstrap_vars.node_ip' value is valid"
+
+       - assert:
+           that:
+             - (masters_vars.nodes is defined) and (masters_vars.nodes is not none) and (masters_vars.nodes | length >= 3)
+           fail_msg: "Number of master nodes should be atleast 3"
+           success_msg: "Check for number of master nodes passed"
+
+       - assert:
+           that:
+             - (workers_vars.nodes is defined) and (workers_vars.nodes is not none) and (workers_vars.nodes | length >= 1)
+           fail_msg: "Number of worker nodes should be atleast 1"
+           success_msg: "Check for number of worker nodes passed"
+
+       - assert:
+           that:
+             - ( 'api_mac' in item.value) and ( "{{ item.value.api_mac }}" is not none) and ("{{ item.value.api_mac }}" | hwaddr)
+           fail_msg: "'{{ item }} api mac' value is not set or not valid mac"
+           success_msg: "'{{ item }} ' has valid api_mac"
+         with_dict: "{{ masters_vars.nodes | combine(workers_vars.nodes)}}"
+
+       - assert:
+           that:
+             - ( 'ip' in item.value) and ( "{{ item.value.ip }}" is not none) and ("{{ item.value.ip }}" | ipaddr)
+           fail_msg: "'{{ item }} node ip' value is not set or not valid ip address"
+           success_msg: "'{{ item }} ' has valid ip"
+         with_dict: "{{ masters_vars.nodes | combine(workers_vars.nodes)}}"
+        

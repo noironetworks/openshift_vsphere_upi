@@ -1,0 +1,33 @@
+---
+
+- name: stop and disable firewalld
+  service:
+     name: firewalld
+     state: stopped
+     enabled: no
+
+- name: restart and enable httpd
+  service:
+     name: httpd
+     state: restarted
+     enabled: yes
+
+- name: install haproxy
+  package:
+     name:
+        - haproxy
+     state: latest
+
+- name: install haproxy config
+  template:
+     src: haproxy.cfg.j2
+     dest: /etc/haproxy/haproxy.cfg
+  register: config_changed
+
+- name: restart and enable haproxy
+  service:
+     name: haproxy
+     state: restarted
+     enabled: yes
+  when: config_changed.changed
+
