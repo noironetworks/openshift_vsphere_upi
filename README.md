@@ -6,11 +6,11 @@ This document is for Openshift version 4.6 and CoreOS 4.6. If you are installing
 ## Step 1 - acc-provision
 * Provision ACI fabric using acc-provision utility. 
 
-  * Specify the flavor parameter value as 'openshift-4.4-esx'. 
+  * Specify the flavor parameter value as 'openshift-4.6-esx'.
   * Specify an archive tar file for '-z' option, the archive file created will be required in the next steps
   
   Example 
-  `acc-provision -a -c acc_provision_input.yaml -u admin -p ### -f openshift-4.4-esx  -z manifests.tar.gz`
+  `acc-provision -a -c acc_provision_input.yaml -u admin -p ### -f openshift-4.6-esx  -z manifests.tar.gz`
   
   On successful execution, a portgroup with name **<system_id>_vlan_<kubeapi_vlan>** will be created under the distributed switch. This document will refer to this portgroup as **api-vlan-portgroup**.
 
