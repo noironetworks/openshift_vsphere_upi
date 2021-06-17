@@ -25,12 +25,6 @@
 
        - assert:
            that:
-             - (bootstrap_vars.node_mac is defined) and (bootstrap_vars.node_mac is not none) and (bootstrap_vars.node_mac | hwaddr)
-           fail_msg: "'bootstrap_vars.node_mac' value is not set or not valid mac"
-           success_msg: "'bootstrap_vars.node_mac' value is valid"
-        
-       - assert:
-           that:
              - (bootstrap_vars.node_ip is defined) and (bootstrap_vars.node_ip is not none) and (bootstrap_vars.node_ip | ipaddr)
            fail_msg: "'bootstrap_vars.node_ip' value is not set or not valid mac"
            success_msg: "'bootstrap_vars.node_ip' value is valid"
@@ -46,13 +40,6 @@
              - (workers_vars.nodes is defined) and (workers_vars.nodes is not none) and (workers_vars.nodes | length >= 1)
            fail_msg: "Number of worker nodes should be atleast 1"
            success_msg: "Check for number of worker nodes passed"
-
-       - assert:
-           that:
-             - ( 'api_mac' in item.value) and ( "{{ item.value.api_mac }}" is not none) and ("{{ item.value.api_mac }}" | hwaddr)
-           fail_msg: "'{{ item }} api mac' value is not set or not valid mac"
-           success_msg: "'{{ item }} ' has valid api_mac"
-         with_dict: "{{ masters_vars.nodes | combine(workers_vars.nodes)}}"
 
        - assert:
            that:

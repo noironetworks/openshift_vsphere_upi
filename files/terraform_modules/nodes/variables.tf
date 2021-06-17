@@ -92,3 +92,6 @@ variable "dns_address" {
   type = string
 }
 
+variable "opflex_mtu_size" {
+  type = number
+}
