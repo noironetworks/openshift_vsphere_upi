@@ -74,6 +74,6 @@ resource "vsphere_virtual_machine" "vm" {
     # configures the static IP
     # https://www.man7.org/linux/man-pages/man7/dracut.cmdline.7.html
     #"guestinfo.afterburn.initrd.network-kargs" = "ip=${var.ipv4_address}::${var.gateway}:${var.netmask}:${var.name}:ens192:off:${var.dns_address}"
-    "guestinfo.afterburn.initrd.network-kargs" = "ip=${var.ipv4_address}::${var.gateway}:${var.netmask}:${var.name}:ens192:off:${var.dns_address} vlan=ens224.${var.infravlan}:ens224 ip=ens224.${var.infravlan}:dhcp"
+    "guestinfo.afterburn.initrd.network-kargs" = "ip=${var.ipv4_address}::${var.gateway}:${var.netmask}:${var.name}:ens192:off:${var.dns_address} ip=ens224:off:${var.opflex_mtu_size} vlan=ens224.${var.infravlan}:ens224 ip=ens224.${var.infravlan}:dhcp:${var.opflex_mtu_size}"
   }
 }

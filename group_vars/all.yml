@@ -1,7 +1,8 @@
+
 #domainname
 #   type: string, 
 #   required: yes
-domainname: ocp4-aci.ocplab.local
+domainname: rk1.ocplab.local
 
 #provision_dns
 #   type: boolean, True or False
@@ -20,7 +21,7 @@ dns_forwarder: 172.28.184.18
 #   type: ip address or resolvable hostname
 #   required: yes
 #   notes: this host is configured as load balancer for cluster and also as dhcp and dns server if required
-loadbalancer_ip: 192.168.18.201
+loadbalancer_ip: 192.168.53.2
 
 #auto_approve_csr:
 #   type: boolean
@@ -35,18 +36,22 @@ proxy_env:
    dummy: dummy
    #set the http/https proxy server, if setup does not need proxy, comment the below values.
    #these values are used for ansible tasks and also passed on to openshift installer
-   http_proxy: http://proxy.esl.cisco.com:80
-   https_proxy: http://proxy.esl.cisco.com:80
-   no_proxy: 10.30.120.6,10.30.120.20,noiro-quay.cisco.com
+   http_proxy: http://<proxy>:80
+   https_proxy: http://<proxy>:80
+   no_proxy: <no-proxy-ips>
 
 #packages
 #  defines the urls to download terraform, openshift client and openshift-install tools from.
 packages:
    validate_certs: False
-   terraform_url: https://releases.hashicorp.com/terraform/0.13.6/terraform_0.13.6_linux_amd64.zip
+
+
+
+   terraform_url: https://releases.hashicorp.com/terraform/1.0.0/terraform_1.0.0_linux_amd64.zip
    openshift_client_linux_url: https://mirror.openshift.com/pub/openshift-v4/clients/ocp/4.6.21/openshift-client-linux-4.6.21.tar.gz
    openshift_install_linux_url: https://mirror.openshift.com/pub/openshift-v4/clients/ocp/4.6.21/openshift-install-linux-4.6.21.tar.gz
-   
+
+
 #default_aci_manifests_archive:
 #  default filename that is searched under files directory.
 #  this can be overridden by passing extra parameter aci_manifests_archive on ansible command line
@@ -55,10 +60,9 @@ default_aci_manifests_archive: aci_manifests.tar.gz
 #opflex_interface_mtu:
 # required: yes
 # MTU size for interface connected to fabric, must be greater than 1564
-opflex_interface_mtu: 1800
+opflex_interface_mtu: 9000
 
 #vsphere 
-#   folder parameter should not be blank, default is set to root
 vsphere:
    server: hypf-vc65.noiro.lab
    user: administrator@vsphere.local
@@ -66,9 +70,12 @@ vsphere:
    allow_unverified_ssl: true
    datacenter_name: hypflex-dc
    cluster_name: hypflex-cluster
-   datastore_name: noiro
+   datastore_name: oshift
+
+
    RHCOS_template_name: RHCOS468
-   folder: / 
+
+   folder: oshift3
 
 #base_dir
 #  type: directory path
@@ -76,14 +83,13 @@ vsphere:
 #  notes: All install files and directories are created under this directory
 base_dir: /root/ocpinstall
 
-#node network details. This is common for bootstrap, master and worker nodes.
 node_network_cidr: 192.168.53.0/24
 node_network_gateway: 192.168.53.1
 node_network_netmask: 255.255.255.0
 
 #bootstrap node variables
 bootstrap_vars:
-   node_ip: 192.168.18.210       #required
+   node_ip: 192.168.53.8
    cpu_count: 8                  #optional: defaults to 4
    memory_KB: 16384              #optional: defaults to 8192
    disk_size_MB: 40              #optional: defaults to 40
@@ -93,24 +99,24 @@ masters_vars:
    memory_KB: 16384              #optional: defaults to 16384
    disk_size_MB: 40              #optional: defaults to 40
    nodes:
-      #ip address for each node is required
+      #mac address and ip address for each node is required
       - master-1:
-          ip: 192.168.18.211
+          ip: 192.168.53.3
       - master-2:
-          ip: 192.168.18.212
+          ip: 192.168.53.4
       - master-3:
-          ip: 192.168.18.213
+          ip: 192.168.53.5
 
 workers_vars:
    cpu_count: 8                #optional: defaults to 4
    memory_KB: 16384            #optional: defaults to 16384
    disk_size_MB: 40            #optional: defaults to 40
    nodes:
-      #ip address for each node is required
+      #mac address and ip address for each node is required
       - worker-1:
-          ip: 192.168.18.214
+          ip: 192.168.53.6
       - worker-2:
-          ip: 192.168.18.215
+          ip: 192.168.53.7
 
 #user_ssh_key:
 #  required: no
@@ -124,15 +130,14 @@ user_ssh_key: ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQD...
 #    
 # example:
 #additional_trust_bundle: |
-#   -----BEGIN CERTIFICATE-----
-#   MIIDDDCCAfQCCQDuOnV7XBjpODANBgkqhkiG9w0BAQsFADBIMQswCQYDVQQGEwJV
-#   UzELMAkGA1UECAwCQ0ExDDAKBgNVBAcMA1NKQzEOMAwGA1UECgwFQ2lzY28xDjAM
+#  -----BEGIN CERTIFICATE-----
+#  MIIDDDCCAfQCCQDuOnV7XBjpODANBgkqhkiG9w0BAQsFADBIMQswCQYDVQQGEwJV
+#  UzELMAkGA1UECAwCQ0ExDDAKBgNVBAcMA1NKQzEOMAwGA1UECgwFQ2lzY28xDjAM
 #  -----END CERTIFICATE-----
-
 
 #openshift_pullsecret:
 #  required: yes
 #  notes: refer to https://cloud.redhat.com/openshift/install/pull-secret
 #  example:
 #    openshift_pullsecret: {"auths":{"cloud.openshift.com":{"auth":.........}
-openshift_pullsecret: 
+openshift_pullsecret:

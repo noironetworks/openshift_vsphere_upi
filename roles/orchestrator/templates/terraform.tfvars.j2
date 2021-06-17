@@ -13,6 +13,7 @@ netmask = "{{ node_network_netmask }}"
 
 infravlan = "{{ aci_infra_vlan }}"
 
+opflex_mtu_size = "{{ opflex_interface_mtu }}"
 ## Cluster configuration
 rhcos_template = "{{ vsphere.RHCOS_template_name }}"
 cluster_slug = "{{ aci_system_id }}"

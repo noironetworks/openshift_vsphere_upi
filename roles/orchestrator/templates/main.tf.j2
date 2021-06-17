@@ -43,6 +43,7 @@ module "master" {
   netmask        = var.netmask
 
   infravlan      = var.infravlan
+  opflex_mtu_size = var.opflex_mtu_size
 }
 
 
@@ -75,6 +76,7 @@ module "worker" {
   netmask        = var.netmask
 
   infravlan      = var.infravlan
+  opflex_mtu_size = var.opflex_mtu_size
 }
 
 module "bootstrap" {
