@@ -44,8 +44,8 @@ proxy_env:
 packages:
    validate_certs: False
    terraform_url: https://releases.hashicorp.com/terraform/0.13.6/terraform_0.13.6_linux_amd64.zip
-   openshift_client_linux_url: https://mirror.openshift.com/pub/openshift-v4/clients/ocp/4.6.21/openshift-client-linux-4.6.21.tar.gz
-   openshift_install_linux_url: https://mirror.openshift.com/pub/openshift-v4/clients/ocp/4.6.21/openshift-install-linux-4.6.21.tar.gz
+   openshift_client_linux_url: https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/ocp/stable-4.9/openshift-client-linux-4.9.11.tar.gz
+   openshift_install_linux_url: https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/ocp/stable-4.9/openshift-install-linux-4.9.11.tar.gz
    
 #default_aci_manifests_archive:
 #  default filename that is searched under files directory.
@@ -67,7 +67,7 @@ vsphere:
    datacenter_name: hypflex-dc
    cluster_name: hypflex-cluster
    datastore_name: noiro
-   RHCOS_template_name: RHCOS468
+   RHCOS_template_name: RHCOS490
    folder: / 
 
 #base_dir
