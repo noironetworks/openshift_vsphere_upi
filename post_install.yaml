@@ -1,0 +1,18 @@
+---
+  - hosts: orchestrator
+    tasks:
+    - name: 'Remove to be replaced default ingress controller'
+      k8s:
+        state: absent
+        kubeconfig: "{{ base_dir }}/bootstrap/auth/kubeconfig"
+        force: yes
+        wait: yes
+        definition: "{{ lookup('file', 'files/ingresscontroller_internal_loadbalancer.yaml') }}"
+
+    - name: 'Replace cluster endpoint strategy to Loadbalancer'
+      k8s:
+        state: present
+        kubeconfig: "{{ base_dir }}/bootstrap/auth/kubeconfig"
+        force: yes
+        wait: no
+        definition: "{{ lookup('file', 'files/ingresscontroller_internal_loadbalancer.yaml') }}"
