@@ -87,6 +87,8 @@ node_network_cidr: 192.168.53.0/24
 node_network_gateway: 192.168.53.1
 node_network_netmask: 255.255.255.0
 
+service_network_cidr: 172.30.0.0/16
+
 #bootstrap node variables
 bootstrap_vars:
    node_ip: 192.168.53.8

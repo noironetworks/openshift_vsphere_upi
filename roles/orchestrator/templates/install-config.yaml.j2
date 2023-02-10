@@ -7,9 +7,9 @@ proxy:
   httpProxy: {{ proxy_env.http_proxy }}
   httpsProxy: {{ proxy_env.https_proxy }}
 {% if proxy_env.no_proxy is defined %}
-  noProxy: .{{ domainname }},.{{ basedomain }},{{ aci_apic_hosts|join(',') }},172.30.0.1,172.30.0.10,.apps.{{ domainname }},{{ vsphere.server }},{{ machine_network_cidr }},{{ proxy_env.no_proxy }}
+  noProxy: .{{ domainname }},.{{ basedomain }},{{ aci_apic_hosts|join(',') }},{{ service_network_cidr | next_nth_usable(1) }},{{ service_network_cidr | next_nth_usable(10) }},.apps.{{ domainname }},{{ vsphere.server }},{{ machine_network_cidr }},{{ proxy_env.no_proxy }}
 {% else %}
-  noProxy: .{{ domainname }},.{{ basedomain }},{{ aci_apic_host|join(',') }},172.30.0.1,172.30.0.10,.apps.{{ domainname }},{{ vsphere.server }},{{ machine_network_cidr }}
+  noProxy: .{{ domainname }},.{{ basedomain }},{{ aci_apic_host|join(',') }},{{ service_network_cidr | next_nth_usable(1) }},{{ service_network_cidr | next_nth_usable(10) }},.apps.{{ domainname }},{{ vsphere.server }},{{ machine_network_cidr }}
 {% endif %}
 {% endif %}
 
@@ -31,7 +31,7 @@ networking:
   machineNetwork:
   - cidr: {{ machine_network_cidr }}
   serviceNetwork:
-  - 172.30.0.0/16
+  - {{ service_network_cidr }}
 platform:
   vsphere:
     vcenter: {{ vsphere.server }}
