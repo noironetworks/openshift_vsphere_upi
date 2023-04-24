@@ -25,13 +25,18 @@ metadata:
   name: {{ dlist[0] }}
 networking:
   clusterNetwork:
-  - cidr: {{ cluster_network_cidr }}
+  - cidr: {{ cluster_network_cidr_v4 }}
     hostPrefix: 23
+  - cidr: {{ cluster_network_cidr_v6 }}
+    hostPrefix: 64
   networkType: CiscoACI
   machineNetwork:
   - cidr: {{ machine_network_cidr }}
+  - cidr: 2600:1d18:f46:9605::/64
   serviceNetwork:
-  - {{ service_network_cidr }}
+{% for cidr in service_network_cidr.split(',') %}
+  - {{ cidr.strip() }}
+{% endfor %}
 platform:
   vsphere:
     vcenter: {{ vsphere.server }}

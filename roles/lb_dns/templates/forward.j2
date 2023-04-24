@@ -10,15 +10,25 @@ api         IN    A    {{ loadbalancer_ip }}
 api-int         IN    A    {{ loadbalancer_ip }}
 *.apps          IN    A    {{ loadbalancer_ip }}
 
-{% for item in masters_api_ip_list %}
-master{{ loop.index }} IN  A  {{ item }}
-etcd-{{ loop.index0 }} IN  A {{ item }}
+
+{% for ip in masters_api_ip_list %}
+; IPv4 address records
+master{{ loop.index }}-ipv4   IN  A       {{ ip.split(',')[0] }}
+etcd-{{ loop.index0 }}-ipv4  IN  A       {{ ip.split(',')[0] }}
+
+; IPv6 address records
+master{{ loop.index }}-ipv6   IN  AAAA    {{ ip.split(',')[1] }}
+etcd-{{ loop.index0 }}-ipv6  IN  AAAA    {{ ip.split(',')[1] }}
 {% endfor %}
 
+{% for ip in workers_api_ip_list %}
+; IPv4 address record
+worker{{ loop.index }}-ipv4   IN  A   {{ ip.split(',')[0] }}
 
-{% for item in workers_api_ip_list %}
-worker{{ loop.index }}  IN  A {{ item }}
+; IPv6 address record
+worker{{ loop.index }}-ipv6   IN  AAAA   {{ ip.split(',')[1] if ',' in ip else '' }}
 {% endfor %}
+
 
 bootstrap  IN    A    {{ bootstrap_vars.node_ip }}
 

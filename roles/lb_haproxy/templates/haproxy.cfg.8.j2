@@ -89,7 +89,8 @@ backend openshift-api-server
     mode tcp
     server bootstrap {{ bootstrap_vars.node_ip }}:6443 check
     {% for ip in masters_api_ip_list %}
-server master{{ loop.index}} {{ ip }}:6443 check
+server master{{ loop.index }} {{ ip.split(',')[0] }}:6443 check
+server master{{ loop.index }} {{ ip.split(',')[1] }}:6443 check
     {% endfor %}
 
 frontend machine-config-server
@@ -103,7 +104,8 @@ backend machine-config-server
     mode tcp
     server bootstrap {{ bootstrap_vars.node_ip }}:22623 check
     {% for ip in masters_api_ip_list %}
-server master{{ loop.index }} {{ ip }}:22623 check
+server master{{ loop.index }} {{ ip.split(',')[0] }}:22623 check
+server master{{ loop.index }} {{ ip.split(',')[1] }}:22623 check
     {% endfor %}
 
 frontend ingress-http
@@ -116,7 +118,8 @@ backend ingress-http
     balance source
     mode tcp
     {%for ip in workers_api_ip_list %}
-server worker{{ loop.index }} {{ ip }}:80 check
+server worker{{ loop.index }} {{ ip.split(',')[0] }}:80 check
+server worker{{ loop.index }} {{ ip.split(',')[1] }}:80 check
     {% endfor %}
 
 frontend ingress-https
@@ -129,5 +132,6 @@ backend ingress-https
     balance source
     mode tcp
     {%for ip in workers_api_ip_list %}
-server worker{{ loop.index }} {{ ip }}:443 check
+server worker{{ loop.index }} {{ ip.split(',')[0] }}:443 check
+server worker{{ loop.index }} {{ ip.split(',')[1] }}:443 check
     {% endfor %}

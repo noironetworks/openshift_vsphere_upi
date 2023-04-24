@@ -43,7 +43,8 @@
 
        - assert:
            that:
-             - ( 'ip' in item.value) and ( "{{ item.value.ip }}" is not none) and ("{{ item.value.ip }}" | ipaddr)
+             - ( 'ip' in item.value) and ( "{{ item.value.ip }}" is not none) and (item.value.ip.split(',')[0] | ipaddr) and (item.value.ip.split(',')[1] | ipaddr)
+               #- ( 'ip' in item.value) and ( "{{ item.value.ip }}" is not none) and ("{{ item.value.ip }}" | ipaddr)
            fail_msg: "'{{ item }} node ip' value is not set or not valid ip address"
            success_msg: "'{{ item }} ' has valid ip"
          with_dict: "{{ masters_vars.nodes | combine(workers_vars.nodes)}}"
