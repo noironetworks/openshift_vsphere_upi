@@ -20,8 +20,8 @@ module "master" {
   name      = "${var.cluster_slug}-master${count.index + 1}"
   folder    = var.folder
   datastore = data.vsphere_datastore.datastore1.id
-  disk_size = {{ masters_vars.disk_size_MB | default(40, true) }}
-  memory    = {{ masters_vars.memory_KB | default(16384, true) }}
+  disk_size = {{ masters_vars.disk_size_GB | default(40, true) }}
+  memory    = {{ masters_vars.memory_MB | default(16384, true) }}
   num_cpu   = {{ masters_vars.cpu_count | default(4, true) }}
   ignition  = file(var.master_ignition_path)
 
@@ -53,8 +53,8 @@ module "worker" {
   name      = "${var.cluster_slug}-worker${count.index + 1}"
   folder    = var.folder
   datastore = data.vsphere_datastore.datastore1.id
-  disk_size = {{ workers_vars.disk_size_MB | default(40, true) }}
-  memory    = {{ workers_vars.memory_KB | default(16384, true) }}
+  disk_size = {{ workers_vars.disk_size_GB | default(40, true) }}
+  memory    = {{ workers_vars.memory_MB | default(16384, true) }}
   num_cpu   = {{ workers_vars.cpu_count | default(4, true) }}
   ignition  = file(var.worker_ignition_path)
 
@@ -85,8 +85,8 @@ module "bootstrap" {
   name      = "${var.cluster_slug}-bootstrap"
   folder    = var.folder
   datastore = data.vsphere_datastore.datastore1.id
-  disk_size = {{ bootstrap_vars.disk_size_MB | default(40, true) }}
-  memory    = {{ bootstrap_vars.memory_KB | default(8192, true) }}
+  disk_size = {{ bootstrap_vars.disk_size_GB | default(40, true) }}
+  memory    = {{ bootstrap_vars.memory_MB | default(8192, true) }}
   num_cpu   = {{ bootstrap_vars.cpu_count | default(4, true) }}
   ignition  = file(var.bootstrap_ignition_path)
 
