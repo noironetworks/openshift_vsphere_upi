@@ -114,11 +114,11 @@
      machine_network_netmask: "{{ machine_network_cidr | ipaddr('netmask') }}"
 
 - set_fact:
-     masters_api_ip_list: "{{ masters_api_ip_list | default([])}} + ['{{ item.value.ip }}']"
+     masters_api_ip_list: "{{ masters_api_ip_list | default([]) + [ item.value.ip ] }}"
   with_dict: "{{ masters_vars.nodes }}"
 
 - set_fact:
-     workers_api_ip_list: "{{ workers_api_ip_list | default([])}} + ['{{ item.value.ip }}']"
+     workers_api_ip_list: "{{ workers_api_ip_list | default([]) + [ item.value.ip ] }}"
   with_dict: "{{ workers_vars.nodes }}"
 
 - set_fact:
