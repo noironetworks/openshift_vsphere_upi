@@ -93,13 +93,13 @@ service_network_cidr: 172.30.0.0/16
 bootstrap_vars:
    node_ip: 192.168.53.8
    cpu_count: 8                  #optional: defaults to 4
-   memory_KB: 16384              #optional: defaults to 8192
-   disk_size_MB: 40              #optional: defaults to 40
+   memory_MB: 16384              #optional: defaults to 8192
+   disk_size_GB: 40              #optional: defaults to 40
 
 masters_vars:
    cpu_count: 8                  #optional: defaults to 4
-   memory_KB: 16384              #optional: defaults to 16384
-   disk_size_MB: 40              #optional: defaults to 40
+   memory_MB: 16384              #optional: defaults to 16384
+   disk_size_GB: 40              #optional: defaults to 40
    nodes:
       #mac address and ip address for each node is required
       - master-1:
@@ -111,8 +111,8 @@ masters_vars:
 
 workers_vars:
    cpu_count: 8                #optional: defaults to 4
-   memory_KB: 16384            #optional: defaults to 16384
-   disk_size_MB: 40            #optional: defaults to 40
+   memory_MB: 16384            #optional: defaults to 16384
+   disk_size_GB: 40            #optional: defaults to 40
    nodes:
       #mac address and ip address for each node is required
       - worker-1:
