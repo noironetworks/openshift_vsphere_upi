@@ -1,21 +1,21 @@
 # Openshift on Vsphere UPI, ACI-CNI plugin
 
 Ansible playbooks for installing Openshift on Vmware user provisioned infrastructure with ACI-CNI plugin.
-This document is for Openshift version 4.6 and CoreOS 4.6. If you are installing Openshift version 4.5 please refer to ocp45 branch
+This document is for Openshift version 4.13 and CoreOS 4.13. If you are installing Openshift version 4.13 please refer to ocp413 branch
 
 ## Step 1 - acc-provision
 * Provision ACI fabric using acc-provision utility. 
 
-  * Specify the flavor parameter value as 'openshift-4.6-esx'.
+  * Specify the flavor parameter value as 'openshift-4.13-esx'.
   * Specify an archive tar file for '-z' option, the archive file created will be required in the next steps
   
   Example 
-  `acc-provision -a -c acc_provision_input.yaml -u admin -p ### -f openshift-4.6-esx  -z manifests.tar.gz`
+  `acc-provision -a -c acc_provision_input.yaml -u admin -p ### -f openshift-4.13-esx  -z manifests.tar.gz`
   
   On successful execution, a portgroup with name **<system_id>_vlan_<kubeapi_vlan>** will be created under the distributed switch. This document will refer to this portgroup as **api-vlan-portgroup**.
 
 ## Step 2 - VM Provisioning
-* Download OCP46 OVA from Redhat site and import it. Specify **api-vlan-portgroup** as the port group for network interface.
+* Download OCP413 OVA from Redhat site and import it. Specify **api-vlan-portgroup** as the port group for network interface.
 * **LoadBalancer**: Provision a RHEL 8 VM with network interface connected to **api-vlan-portgroup**.
 This VM will be configured as loadbalancer for the openshift cluster. 
 * **Orchestrator**: Provision a RHEL 8 VM with network interface connected to **api-vlan-portgroup**. 
