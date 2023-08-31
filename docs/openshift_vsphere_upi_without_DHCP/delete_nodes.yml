@@ -1,0 +1,14 @@
+---
+  - hosts: orchestrator
+    tasks:
+       - set_fact:
+           terraform_dir: "{{ base_dir }}/terraform"
+
+       - name: destroy nodes
+         command:
+           cmd: terraform destroy --auto-approve -no-color
+           chdir: "{{ terraform_dir }}/{{ item }}"
+         with_items:
+           - workers
+           - masters
+           - bootstrap
