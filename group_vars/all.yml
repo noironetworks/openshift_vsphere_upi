@@ -2,7 +2,7 @@
 #domainname
 #   type: string, 
 #   required: yes
-domainname: rk1.ocplab.local
+domainname: ocp414.ocplab.local
 
 #provision_dns
 #   type: boolean, True or False
@@ -48,8 +48,8 @@ packages:
 
 
    terraform_url: https://releases.hashicorp.com/terraform/1.0.0/terraform_1.0.0_linux_amd64.zip
-   openshift_client_linux_url: https://mirror.openshift.com/pub/openshift-v4/clients/ocp/4.6.21/openshift-client-linux-4.6.21.tar.gz
-   openshift_install_linux_url: https://mirror.openshift.com/pub/openshift-v4/clients/ocp/4.6.21/openshift-install-linux-4.6.21.tar.gz
+   openshift_client_linux_url: https://mirror.openshift.com/pub/openshift-v4/clients/ocp/4.14.6/openshift-client-linux-4.14.6.tar.gz
+   openshift_install_linux_url: https://mirror.openshift.com/pub/openshift-v4/clients/ocp/4.14.6/openshift-install-linux-4.14.6.tar.gz
 
 
 #default_aci_manifests_archive:
@@ -73,7 +73,7 @@ vsphere:
    datastore_name: oshift
 
 
-   RHCOS_template_name: RHCOS468
+   RHCOS_template_name: RHCOS414
 
    folder: oshift3
 
