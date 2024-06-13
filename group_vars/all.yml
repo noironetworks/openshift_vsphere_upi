@@ -2,7 +2,7 @@
 #domainname
 #   type: string, 
 #   required: yes
-domainname: ocpvmw1.noiro.local
+domainname: <domainname_for_cluster>
 
 #provision_dns
 #   type: boolean, True or False
@@ -15,13 +15,13 @@ provision_dns: True
 #   type: ip address
 #   required: yes
 #   notes: This value is used when setting up a dhcp service and also for 'forwarders' value in dns configuration.
-dns_forwarder: 172.28.184.18
+dns_forwarder: <forwarder_DNS_ip>
 
 #loadbalancer_ip:
 #   type: ip address or resolvable hostname
 #   required: yes
 #   notes: this host is configured as load balancer for cluster and also as dhcp and dns server if required
-loadbalancer_ip: 192.168.21.2
+loadbalancer_ip: <kubeapi_and_ingress_lb_VIP>
 
 #auto_approve_csr:
 #   type: boolean
@@ -36,9 +36,9 @@ proxy_env:
    dummy: dummy
    #set the http/https proxy server, if setup does not need proxy, comment the below values.
    #these values are used for ansible tasks and also passed on to openshift installer
-   http_proxy: http://proxy.esl.cisco.com:80
-   https_proxy: http://proxy.esl.cisco.com:80
-   no_proxy: 172.28.184.248,127.0.0.1,localhost,satellite01.localdomain,10.30.120.186,hypf-vc65.noiro.lab,10.30.120.180,10.30.120.61,192.168.21.2,192.168.21.0/24,172.30.0.0/16,172.30.0.1,172.30.0.10,10.2.0.0/16,.apps.ocpvmw1.noiro.lab,api.ocpvmw1.noiro.lab,api-int.ocpvmw1.noiro.lab
+   http_proxy: http://<proxy_url>:<port>
+   https_proxy: http://<proxy_url>:<port>
+   no_proxy: <apic-ip>,<kubeapi_lb>,localhost,127.0.0.1,.apps.<domainname>,api.<domainname>,api-int.<domainname>,<node_subnet_cidr>,<pod_subnet_cidr>,<service_subnet_cidr>,<satellite>,<private_registery>
 
 #packages
 #  defines the urls to download terraform, openshift client and openshift-install tools from.
@@ -64,25 +64,25 @@ opflex_interface_mtu: 9000
 
 #vsphere 
 vsphere:
-   server: hypf-vc65.noiro.lab
-   user: administrator@vsphere.local
-   passwd: Noir0123!
+   server: <vCenter_url>
+   user: <vCenter_username>
+   passwd: <vCetner_password>
    allow_unverified_ssl: true
-   datacenter_name: cko-dc
-   cluster_name: fab20-hosts
-   datastore_name: ds-esx-3-raid5
+   datacenter_name: <target_dc_name> 
+   cluster_name: <target_esxi_cluster_name>
+   datastore_name: <target_datastore>
 
 
-   RHCOS_template_name: RHCOS4150
+   RHCOS_template_name: <rhcos_template_deployed_from_ova>
 
-   folder: ocp-vmw-1
+   folder: <vm_folder_name>
 
 #base_dir
 #  type: directory path
 #  required: yes
 #  notes: All install files and directories are created under this directory
 base_dir: /root/ocpinstall
-
+## below IP addresses are example, change to fit to your environment:
 node_network_cidr: 192.168.21.0/24
 node_network_gateway: 192.168.21.1
 node_network_netmask: 255.255.255.0
@@ -124,11 +124,11 @@ workers_vars:
 #  required: no
 #  notes: if specified this key is setup on nodes, else ssh key of current
 #        user is used.
-user_ssh_key: ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDRpZigrsKXcmAyxkQScv/FyPPc9BJ+/rIYuOS9BB5rOZuwUGDT9X+DEed2y3lurKOYDmNK2UFBUNsn5Lojs7FKd5VTHq1Bm85nH0wJzMpR6sBUA5liOxy2kVkWofNZXr3MlkjiEtvuZWBeAOd6sad4lB6MTXrC9ceyC+ZZJWqfpydY3Pl+AZ7P96u7OhecyZtmVli52gW5sJmJB9cAaAFZo7zPFTiOXkiKgZfAi9AcLqdp9PQTYiM8P9DwPp+N11VxMk2e32ztkOEn/mnYRdbzTc7tyeDHETzKDOsnhOaNUo+drVJCy8a1ajEPjcQPHJMNt6wiYWfvlt8mdeb5p/68WXHHQY4joCoeIV20K9NqaZkqNa3a7LNmkHNrFlTNm6PD9bKkplA3YHXegAwPAMTlyYitxmSzNrHbA9tLidzIE2zzYrLMUXpSqf4vUCrpRRfOw7R+n07C6sxRCRkZm3g5uhlzzQMmdlkjcpKl+jRxogksO/RQZ8Zv8hazGGxpOlk=
+user_ssh_key: ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAA....
 
 #openshift_pullsecret:
 #  required: yes
 #  notes: refer to https://cloud.redhat.com/openshift/install/pull-secret
 #  example:
 #    openshift_pullsecret: {"auths":{"cloud.openshift.com":{"auth":.........}
-openshift_pullsecret: {"auths":{"cloud.openshift.com":{"auth":"b3BlbnNoaWZ0LXJlbGVhc2UtZGV2K29jbV9hY2Nlc3NfODI2MmM0ZWRiMzM2NDIwYjk3YTRiOGE2ZjQxMTcxNzI6SDlNS1pHSUE4OUZBOVdFNTVaT1YwVkpQUURHOVMwUkkwU0RNSDBDM1VIM1M1SlhOM1haSDdRTEs0REdWU1FZRA==","email":"fwardzic@cisco.com"},"quay.io":{"auth":"b3BlbnNoaWZ0LXJlbGVhc2UtZGV2K29jbV9hY2Nlc3NfODI2MmM0ZWRiMzM2NDIwYjk3YTRiOGE2ZjQxMTcxNzI6SDlNS1pHSUE4OUZBOVdFNTVaT1YwVkpQUURHOVMwUkkwU0RNSDBDM1VIM1M1SlhOM1haSDdRTEs0REdWU1FZRA==","email":"fwardzic@cisco.com"},"registry.connect.redhat.com":{"auth":"fHVoYy1wb29sLWRmZDZiYmIzLWM4ODQtNDE3YS04NmM0LTBmOTY4ZjQxMjUwYTpleUpoYkdjaU9pSlNVelV4TWlKOS5leUp6ZFdJaU9pSTBNV015WkdWa01EWXpOelEwTm1Zd1lXTTVaV05sTkdaaVpUVXpZbU0wTmlKOS51RGlNLVVlVEI3LUZ4TGZIamdkMHRCQVNYOEFqSHdwS1lLdW5FYzZsanhqMmdVdUFId2ZvajAwVm9PdEUtbkFBU2ZtNDBseU9nb0FDcU5ncVBYYjhJdmFsSDBxcDhJTk04TXBqaU9rTHF0bnlPYllWR1loWGY2TmZkak5GVXk0OXI2S0tYb3dwdEFOT3EwSV9yMFhnOFdmMjlESmlDS3ZqUW5pek93QW9VUFdlZjRPTFVWOXl5MHZfQUY5enlrNnlJaG8tdjEzdWZLcDhtcHlkUkctQ0FzTzJ4V0ZpZzdZT2p3WlprNUtqVjZrOGFtTWE4VFJlNW92N0VwME9oaHlKeXFoVENXYXJNR3ZMVk9DeDYxWU9YcDE3emh3UUUtV0VwRDhFQjhVMUhNdWNZWVFFXzF0MVBocDdLanlGSXJKcXRQLUJ5NHZDQXlFZzlVTDJZSks5ZHJWenRqTndNQ2FKZ0FENEJFRjJJYnZYQml6WmhIUXVnV2l6cjgtZjZoc2p4WEszVjY4LTJBNVo0YXlFMDNzODBEeUJDazBlbTNIcnROeVdFRDlIdnBoRURkUTBwR2RkWTY0ZGVTSktjbnQweFRfdkg3Rjg4a0FkYmkzYkJSemZOeTZZZkxXU0dxSE1UNUJwbmpabGFablRnMDRTTXo0SEY2enRmMzVzdE5SZXlodFB0a0FsME9DNkZ1a1dDNl9xZDVuS0pBVE9OYXBDaFVDMzdtRFV2YW91eWNpbk5TQnJZZGcwdDhrTEpsdDd6bDZQNENYaEFzRzFKYjZBWm03TV9EMlNtVTNtYmRFbTVBSlhmRC1IOV96MVIzYjZ2d3BZdl9RNHRrbHg1Q2NPMERkT09WSHNnVHAxZ3hqblZVSEhPbWtfOU1VS3lRdExaSHV5MkloZlJrUQ==","email":"fwardzic@cisco.com"},"registry.redhat.io":{"auth":"fHVoYy1wb29sLWRmZDZiYmIzLWM4ODQtNDE3YS04NmM0LTBmOTY4ZjQxMjUwYTpleUpoYkdjaU9pSlNVelV4TWlKOS5leUp6ZFdJaU9pSTBNV015WkdWa01EWXpOelEwTm1Zd1lXTTVaV05sTkdaaVpUVXpZbU0wTmlKOS51RGlNLVVlVEI3LUZ4TGZIamdkMHRCQVNYOEFqSHdwS1lLdW5FYzZsanhqMmdVdUFId2ZvajAwVm9PdEUtbkFBU2ZtNDBseU9nb0FDcU5ncVBYYjhJdmFsSDBxcDhJTk04TXBqaU9rTHF0bnlPYllWR1loWGY2TmZkak5GVXk0OXI2S0tYb3dwdEFOT3EwSV9yMFhnOFdmMjlESmlDS3ZqUW5pek93QW9VUFdlZjRPTFVWOXl5MHZfQUY5enlrNnlJaG8tdjEzdWZLcDhtcHlkUkctQ0FzTzJ4V0ZpZzdZT2p3WlprNUtqVjZrOGFtTWE4VFJlNW92N0VwME9oaHlKeXFoVENXYXJNR3ZMVk9DeDYxWU9YcDE3emh3UUUtV0VwRDhFQjhVMUhNdWNZWVFFXzF0MVBocDdLanlGSXJKcXRQLUJ5NHZDQXlFZzlVTDJZSks5ZHJWenRqTndNQ2FKZ0FENEJFRjJJYnZYQml6WmhIUXVnV2l6cjgtZjZoc2p4WEszVjY4LTJBNVo0YXlFMDNzODBEeUJDazBlbTNIcnROeVdFRDlIdnBoRURkUTBwR2RkWTY0ZGVTSktjbnQweFRfdkg3Rjg4a0FkYmkzYkJSemZOeTZZZkxXU0dxSE1UNUJwbmpabGFablRnMDRTTXo0SEY2enRmMzVzdE5SZXlodFB0a0FsME9DNkZ1a1dDNl9xZDVuS0pBVE9OYXBDaFVDMzdtRFV2YW91eWNpbk5TQnJZZGcwdDhrTEpsdDd6bDZQNENYaEFzRzFKYjZBWm03TV9EMlNtVTNtYmRFbTVBSlhmRC1IOV96MVIzYjZ2d3BZdl9RNHRrbHg1Q2NPMERkT09WSHNnVHAxZ3hqblZVSEhPbWtfOU1VS3lRdExaSHV5MkloZlJrUQ==","email":"fwardzic@cisco.com"}}}
+openshift_pullsecret: 

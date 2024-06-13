@@ -6,11 +6,11 @@
 
   - hosts: lb
     roles:
-      - role: lb_selinux
+            #      - role: lb_selinux
       - role: bertvv.httpd
         httpd_listen: 8080
         httpd_listen_ssl: 8081
-      - role: lb_haproxy
+        #      - role: lb_haproxy
       - role: lb_dns
         when: provision_dns == True
  

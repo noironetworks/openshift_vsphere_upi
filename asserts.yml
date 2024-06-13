@@ -4,7 +4,7 @@
     tasks:
        - assert:
            that:
-             - ( {{ item }} is defined) and ({{ item }} is not none) and ({{ item }}|length > 0)
+             - ( item is defined) and ( item is not none) and ( item | length > 0)
            fail_msg: "'{{ item }}' value is not set or empty"
          with_items:
            - base_dir
@@ -43,7 +43,7 @@
 
        - assert:
            that:
-             - ( 'ip' in item.value) and ( "{{ item.value.ip }}" is not none) and ("{{ item.value.ip }}" | ansible.utils.ipaddr)
+             - ( 'ip' in item.value) and (item.value.ip is not none) and (item.value.ip | ansible.utils.ipaddr)
            fail_msg: "'{{ item }} node ip' value is not set or not valid ip address"
            success_msg: "'{{ item }} ' has valid ip"
          with_dict: "{{ masters_vars.nodes | combine(workers_vars.nodes)}}"
