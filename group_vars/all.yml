@@ -2,7 +2,7 @@
 #domainname
 #   type: string, 
 #   required: yes
-domainname: ocp414.ocplab.local
+domainname: ocpvmw1.noiro.local
 
 #provision_dns
 #   type: boolean, True or False
@@ -21,7 +21,7 @@ dns_forwarder: 172.28.184.18
 #   type: ip address or resolvable hostname
 #   required: yes
 #   notes: this host is configured as load balancer for cluster and also as dhcp and dns server if required
-loadbalancer_ip: 192.168.53.2
+loadbalancer_ip: 192.168.21.2
 
 #auto_approve_csr:
 #   type: boolean
@@ -36,9 +36,9 @@ proxy_env:
    dummy: dummy
    #set the http/https proxy server, if setup does not need proxy, comment the below values.
    #these values are used for ansible tasks and also passed on to openshift installer
-   http_proxy: http://<proxy>:80
-   https_proxy: http://<proxy>:80
-   no_proxy: <no-proxy-ips>
+   http_proxy: http://proxy.esl.cisco.com:80
+   https_proxy: http://proxy.esl.cisco.com:80
+   no_proxy: 172.28.184.248,127.0.0.1,localhost,satellite01.localdomain,10.30.120.186,hypf-vc65.noiro.lab,10.30.120.180,10.30.120.61,192.168.21.2,192.168.21.0/24,172.30.0.0/16,172.30.0.1,172.30.0.10,10.2.0.0/16,.apps.ocpvmw1.noiro.lab,api.ocpvmw1.noiro.lab,api-int.ocpvmw1.noiro.lab
 
 #packages
 #  defines the urls to download terraform, openshift client and openshift-install tools from.
@@ -47,9 +47,9 @@ packages:
 
 
 
-   terraform_url: https://releases.hashicorp.com/terraform/1.0.0/terraform_1.0.0_linux_amd64.zip
-   openshift_client_linux_url: https://mirror.openshift.com/pub/openshift-v4/clients/ocp/4.14.6/openshift-client-linux-4.14.6.tar.gz
-   openshift_install_linux_url: https://mirror.openshift.com/pub/openshift-v4/clients/ocp/4.14.6/openshift-install-linux-4.14.6.tar.gz
+   terraform_url: https://releases.hashicorp.com/terraform/1.4.6/terraform_1.4.6_linux_amd64.zip
+   openshift_client_linux_url: https://mirror.openshift.com/pub/openshift-v4/clients/ocp/4.14.29/openshift-client-linux-4.14.29.tar.gz
+   openshift_install_linux_url: https://mirror.openshift.com/pub/openshift-v4/clients/ocp/4.14.29/openshift-install-linux-4.14.29.tar.gz
 
 
 #default_aci_manifests_archive:
@@ -66,16 +66,16 @@ opflex_interface_mtu: 9000
 vsphere:
    server: hypf-vc65.noiro.lab
    user: administrator@vsphere.local
-   passwd: xxxx
+   passwd: Noir0123!
    allow_unverified_ssl: true
-   datacenter_name: hypflex-dc
-   cluster_name: hypflex-cluster
-   datastore_name: oshift
+   datacenter_name: cko-dc
+   cluster_name: fab20-hosts
+   datastore_name: ds-esx-3-raid5
 
 
-   RHCOS_template_name: RHCOS414
+   RHCOS_template_name: RHCOS4150
 
-   folder: oshift3
+   folder: ocp-vmw-1
 
 #base_dir
 #  type: directory path
@@ -83,63 +83,52 @@ vsphere:
 #  notes: All install files and directories are created under this directory
 base_dir: /root/ocpinstall
 
-node_network_cidr: 192.168.53.0/24
-node_network_gateway: 192.168.53.1
+node_network_cidr: 192.168.21.0/24
+node_network_gateway: 192.168.21.1
 node_network_netmask: 255.255.255.0
 
 service_network_cidr: 172.30.0.0/16
 
 #bootstrap node variables
 bootstrap_vars:
-   node_ip: 192.168.53.8
+   node_ip: 192.168.21.8
    cpu_count: 8                  #optional: defaults to 4
-   memory_MB: 16384              #optional: defaults to 8192
-   disk_size_GB: 40              #optional: defaults to 40
+   memory_KB: 16384              #optional: defaults to 8192
+   disk_size_MB: 40              #optional: defaults to 40
 
 masters_vars:
    cpu_count: 8                  #optional: defaults to 4
-   memory_MB: 16384              #optional: defaults to 16384
-   disk_size_GB: 40              #optional: defaults to 40
+   memory_KB: 16384              #optional: defaults to 16384
+   disk_size_MB: 40              #optional: defaults to 40
    nodes:
       #mac address and ip address for each node is required
       - master-1:
-          ip: 192.168.53.3
+          ip: 192.168.21.3
       - master-2:
-          ip: 192.168.53.4
+          ip: 192.168.21.4
       - master-3:
-          ip: 192.168.53.5
+          ip: 192.168.21.5
 
 workers_vars:
    cpu_count: 8                #optional: defaults to 4
-   memory_MB: 16384            #optional: defaults to 16384
-   disk_size_GB: 40            #optional: defaults to 40
+   memory_KB: 16384            #optional: defaults to 16384
+   disk_size_MB: 40            #optional: defaults to 40
    nodes:
       #mac address and ip address for each node is required
       - worker-1:
-          ip: 192.168.53.6
+          ip: 192.168.21.6
       - worker-2:
-          ip: 192.168.53.7
+          ip: 192.168.21.7
 
 #user_ssh_key:
 #  required: no
 #  notes: if specified this key is setup on nodes, else ssh key of current
 #        user is used.
-user_ssh_key: ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQD...
-
-#additional_trust_bundle:
-#  required: no
-#  notes: use this field to add a certificate for private repository
-#    
-# example:
-#additional_trust_bundle: |
-#  -----BEGIN CERTIFICATE-----
-#  MIIDDDCCAfQCCQDuOnV7XBjpODANBgkqhkiG9w0BAQsFADBIMQswCQYDVQQGEwJV
-#  UzELMAkGA1UECAwCQ0ExDDAKBgNVBAcMA1NKQzEOMAwGA1UECgwFQ2lzY28xDjAM
-#  -----END CERTIFICATE-----
+user_ssh_key: ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDRpZigrsKXcmAyxkQScv/FyPPc9BJ+/rIYuOS9BB5rOZuwUGDT9X+DEed2y3lurKOYDmNK2UFBUNsn5Lojs7FKd5VTHq1Bm85nH0wJzMpR6sBUA5liOxy2kVkWofNZXr3MlkjiEtvuZWBeAOd6sad4lB6MTXrC9ceyC+ZZJWqfpydY3Pl+AZ7P96u7OhecyZtmVli52gW5sJmJB9cAaAFZo7zPFTiOXkiKgZfAi9AcLqdp9PQTYiM8P9DwPp+N11VxMk2e32ztkOEn/mnYRdbzTc7tyeDHETzKDOsnhOaNUo+drVJCy8a1ajEPjcQPHJMNt6wiYWfvlt8mdeb5p/68WXHHQY4joCoeIV20K9NqaZkqNa3a7LNmkHNrFlTNm6PD9bKkplA3YHXegAwPAMTlyYitxmSzNrHbA9tLidzIE2zzYrLMUXpSqf4vUCrpRRfOw7R+n07C6sxRCRkZm3g5uhlzzQMmdlkjcpKl+jRxogksO/RQZ8Zv8hazGGxpOlk=
 
 #openshift_pullsecret:
 #  required: yes
 #  notes: refer to https://cloud.redhat.com/openshift/install/pull-secret
 #  example:
 #    openshift_pullsecret: {"auths":{"cloud.openshift.com":{"auth":.........}
-openshift_pullsecret:
+openshift_pullsecret: {"auths":{"cloud.openshift.com":{"auth":"b3BlbnNoaWZ0LXJlbGVhc2UtZGV2K29jbV9hY2Nlc3NfODI2MmM0ZWRiMzM2NDIwYjk3YTRiOGE2ZjQxMTcxNzI6SDlNS1pHSUE4OUZBOVdFNTVaT1YwVkpQUURHOVMwUkkwU0RNSDBDM1VIM1M1SlhOM1haSDdRTEs0REdWU1FZRA==","email":"fwardzic@cisco.com"},"quay.io":{"auth":"b3BlbnNoaWZ0LXJlbGVhc2UtZGV2K29jbV9hY2Nlc3NfODI2MmM0ZWRiMzM2NDIwYjk3YTRiOGE2ZjQxMTcxNzI6SDlNS1pHSUE4OUZBOVdFNTVaT1YwVkpQUURHOVMwUkkwU0RNSDBDM1VIM1M1SlhOM1haSDdRTEs0REdWU1FZRA==","email":"fwardzic@cisco.com"},"registry.connect.redhat.com":{"auth":"fHVoYy1wb29sLWRmZDZiYmIzLWM4ODQtNDE3YS04NmM0LTBmOTY4ZjQxMjUwYTpleUpoYkdjaU9pSlNVelV4TWlKOS5leUp6ZFdJaU9pSTBNV015WkdWa01EWXpOelEwTm1Zd1lXTTVaV05sTkdaaVpUVXpZbU0wTmlKOS51RGlNLVVlVEI3LUZ4TGZIamdkMHRCQVNYOEFqSHdwS1lLdW5FYzZsanhqMmdVdUFId2ZvajAwVm9PdEUtbkFBU2ZtNDBseU9nb0FDcU5ncVBYYjhJdmFsSDBxcDhJTk04TXBqaU9rTHF0bnlPYllWR1loWGY2TmZkak5GVXk0OXI2S0tYb3dwdEFOT3EwSV9yMFhnOFdmMjlESmlDS3ZqUW5pek93QW9VUFdlZjRPTFVWOXl5MHZfQUY5enlrNnlJaG8tdjEzdWZLcDhtcHlkUkctQ0FzTzJ4V0ZpZzdZT2p3WlprNUtqVjZrOGFtTWE4VFJlNW92N0VwME9oaHlKeXFoVENXYXJNR3ZMVk9DeDYxWU9YcDE3emh3UUUtV0VwRDhFQjhVMUhNdWNZWVFFXzF0MVBocDdLanlGSXJKcXRQLUJ5NHZDQXlFZzlVTDJZSks5ZHJWenRqTndNQ2FKZ0FENEJFRjJJYnZYQml6WmhIUXVnV2l6cjgtZjZoc2p4WEszVjY4LTJBNVo0YXlFMDNzODBEeUJDazBlbTNIcnROeVdFRDlIdnBoRURkUTBwR2RkWTY0ZGVTSktjbnQweFRfdkg3Rjg4a0FkYmkzYkJSemZOeTZZZkxXU0dxSE1UNUJwbmpabGFablRnMDRTTXo0SEY2enRmMzVzdE5SZXlodFB0a0FsME9DNkZ1a1dDNl9xZDVuS0pBVE9OYXBDaFVDMzdtRFV2YW91eWNpbk5TQnJZZGcwdDhrTEpsdDd6bDZQNENYaEFzRzFKYjZBWm03TV9EMlNtVTNtYmRFbTVBSlhmRC1IOV96MVIzYjZ2d3BZdl9RNHRrbHg1Q2NPMERkT09WSHNnVHAxZ3hqblZVSEhPbWtfOU1VS3lRdExaSHV5MkloZlJrUQ==","email":"fwardzic@cisco.com"},"registry.redhat.io":{"auth":"fHVoYy1wb29sLWRmZDZiYmIzLWM4ODQtNDE3YS04NmM0LTBmOTY4ZjQxMjUwYTpleUpoYkdjaU9pSlNVelV4TWlKOS5leUp6ZFdJaU9pSTBNV015WkdWa01EWXpOelEwTm1Zd1lXTTVaV05sTkdaaVpUVXpZbU0wTmlKOS51RGlNLVVlVEI3LUZ4TGZIamdkMHRCQVNYOEFqSHdwS1lLdW5FYzZsanhqMmdVdUFId2ZvajAwVm9PdEUtbkFBU2ZtNDBseU9nb0FDcU5ncVBYYjhJdmFsSDBxcDhJTk04TXBqaU9rTHF0bnlPYllWR1loWGY2TmZkak5GVXk0OXI2S0tYb3dwdEFOT3EwSV9yMFhnOFdmMjlESmlDS3ZqUW5pek93QW9VUFdlZjRPTFVWOXl5MHZfQUY5enlrNnlJaG8tdjEzdWZLcDhtcHlkUkctQ0FzTzJ4V0ZpZzdZT2p3WlprNUtqVjZrOGFtTWE4VFJlNW92N0VwME9oaHlKeXFoVENXYXJNR3ZMVk9DeDYxWU9YcDE3emh3UUUtV0VwRDhFQjhVMUhNdWNZWVFFXzF0MVBocDdLanlGSXJKcXRQLUJ5NHZDQXlFZzlVTDJZSks5ZHJWenRqTndNQ2FKZ0FENEJFRjJJYnZYQml6WmhIUXVnV2l6cjgtZjZoc2p4WEszVjY4LTJBNVo0YXlFMDNzODBEeUJDazBlbTNIcnROeVdFRDlIdnBoRURkUTBwR2RkWTY0ZGVTSktjbnQweFRfdkg3Rjg4a0FkYmkzYkJSemZOeTZZZkxXU0dxSE1UNUJwbmpabGFablRnMDRTTXo0SEY2enRmMzVzdE5SZXlodFB0a0FsME9DNkZ1a1dDNl9xZDVuS0pBVE9OYXBDaFVDMzdtRFV2YW91eWNpbk5TQnJZZGcwdDhrTEpsdDd6bDZQNENYaEFzRzFKYjZBWm03TV9EMlNtVTNtYmRFbTVBSlhmRC1IOV96MVIzYjZ2d3BZdl9RNHRrbHg1Q2NPMERkT09WSHNnVHAxZ3hqblZVSEhPbWtfOU1VS3lRdExaSHV5MkloZlJrUQ==","email":"fwardzic@cisco.com"}}}

@@ -25,7 +25,7 @@
 
        - assert:
            that:
-             - (bootstrap_vars.node_ip is defined) and (bootstrap_vars.node_ip is not none) and (bootstrap_vars.node_ip | ipaddr)
+             - (bootstrap_vars.node_ip is defined) and (bootstrap_vars.node_ip is not none) and (bootstrap_vars.node_ip | ansible.utils.ipaddr)
            fail_msg: "'bootstrap_vars.node_ip' value is not set or not valid mac"
            success_msg: "'bootstrap_vars.node_ip' value is valid"
 
@@ -43,7 +43,7 @@
 
        - assert:
            that:
-             - ( 'ip' in item.value) and ( "{{ item.value.ip }}" is not none) and ("{{ item.value.ip }}" | ipaddr)
+             - ( 'ip' in item.value) and ( "{{ item.value.ip }}" is not none) and ("{{ item.value.ip }}" | ansible.utils.ipaddr)
            fail_msg: "'{{ item }} node ip' value is not set or not valid ip address"
            success_msg: "'{{ item }} ' has valid ip"
          with_dict: "{{ masters_vars.nodes | combine(workers_vars.nodes)}}"
