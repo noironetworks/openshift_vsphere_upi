@@ -2,7 +2,7 @@
 #domainname
 #   type: string, 
 #   required: yes
-domainname: rk1.ocplab.local
+domainname: ocp.ocp416.lab
 
 #provision_dns
 #   type: boolean, True or False
@@ -48,8 +48,8 @@ packages:
 
 
    terraform_url: https://releases.hashicorp.com/terraform/1.0.0/terraform_1.0.0_linux_amd64.zip
-   openshift_client_linux_url: https://mirror.openshift.com/pub/openshift-v4/clients/ocp/4.6.21/openshift-client-linux-4.6.21.tar.gz
-   openshift_install_linux_url: https://mirror.openshift.com/pub/openshift-v4/clients/ocp/4.6.21/openshift-install-linux-4.6.21.tar.gz
+   openshift_client_linux_url: https://mirror.openshift.com/pub/openshift-v4/clients/ocp/4.16.35/openshift-client-linux-4.16.35.tar.gz
+   openshift_install_linux_url: https://mirror.openshift.com/pub/openshift-v4/clients/ocp/4.16.35/openshift-install-linux-4.16.35.tar.gz
 
 
 #default_aci_manifests_archive:
@@ -63,19 +63,28 @@ default_aci_manifests_archive: aci_manifests.tar.gz
 opflex_interface_mtu: 9000
 
 #vsphere 
-vsphere:
-   server: hypf-vc65.noiro.lab
-   user: administrator@vsphere.local
-   passwd: xxxx
-   allow_unverified_ssl: true
-   datacenter_name: hypflex-dc
-   cluster_name: hypflex-cluster
-   datastore_name: oshift
+platform:
+  vsphere:
+    vcenters:
+    - server: hypf-vc65.noiro.lab
+      user: administrator@vsphere.local
+      password: xxxx
+      datacenters:
+      - k8s-scale
+    failureDomains:
+    - name: fd-1
+      region: region-1
+      zone: zone-1
+      server: hypf-vc65.noiro.lab
+      topology:
+        computeCluster: /k8s-scale/host/k8s-scale-hosts
+        networks:
+        - VM Network
+        datacenter: k8s-scale
+        datastore: /k8s-scale/datastore/k8s-scale-ds-esxi-2-nvme
 
-
-   RHCOS_template_name: RHCOS468
-
-   folder: oshift3
+    RHCOS_template_name: RHCOS416
+    folder: ocp-416
 
 #base_dir
 #  type: directory path

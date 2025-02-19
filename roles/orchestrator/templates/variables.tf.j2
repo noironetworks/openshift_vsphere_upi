@@ -17,26 +17,26 @@ variable "rhcos_template" {
 }
 
 provider "vsphere" {
-  user           = "{{ vsphere.user }}"
-  password       = "{{ vsphere.passwd }}"
-  vsphere_server = "{{ vsphere.server }}"
+  user           = "{{ platform.vsphere.vcenters[0].user }}"
+  password       = "{{ platform.vsphere.vcenters[0].password }}"
+  vsphere_server = "{{ platform.vsphere.vcenters[0].server }}"
 
   # If you have a self-signed cert
   allow_unverified_ssl = true
 }
 
 data "vsphere_datacenter" "dc" {
-  name = "{{ vsphere.datacenter_name }}"
+  name = "{{ platform.vsphere.vcenters[0].datacenters[0] }}"
 }
 
 data "vsphere_compute_cluster" "cluster" {
-  name          = "{{ vsphere.cluster_name }}"
+  name          = "{{ platform.vsphere.failureDomains[0].topology.computeCluster.split('/')[-1] }}"
   datacenter_id = data.vsphere_datacenter.dc.id
 }
 
 
 data "vsphere_datastore" "datastore1" {
-  name          =  "{{ vsphere.datastore_name }}"
+  name          =  "{{ platform.vsphere.failureDomains[0].topology.datastore.split('/')[-1] }}"
   datacenter_id = data.vsphere_datacenter.dc.id
 }
 
@@ -46,7 +46,7 @@ data "vsphere_datastore" "datastore1" {
 
 provider "ignition" {
   # https://www.terraform.io/docs/providers/ignition/index.html
-  version = "1.2.1"
+  #version = "1.2.1"
 }
 
 variable "ignition" {

@@ -13,13 +13,13 @@
            - packages.terraform_url
            - packages.openshift_client_linux_url
            - packages.openshift_install_linux_url
-           - vsphere.server
-           - vsphere.user
-           - vsphere.passwd
-           - vsphere.datacenter_name
-           - vsphere.cluster_name
-           - vsphere.datastore_name
-           - vsphere.RHCOS_template_name
+           - platform.vsphere.vcenters[0].server
+           - platform.vsphere.vcenters[0].user
+           - platform.vsphere.vcenters[0].password
+           - platform.vsphere.vcenters[0].datacenters[0]
+           - platform.vsphere.failureDomains[0].topology.computeCluster
+           - platform.vsphere.failureDomains[0].topology.datastore
+           - platform.vsphere.RHCOS_template_name
            - openshift_pullsecret
            - domainname
 

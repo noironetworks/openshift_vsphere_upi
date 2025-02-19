@@ -44,6 +44,7 @@
            - 99_openshift-cluster-api_master-machines-0.yaml
            - 99_openshift-cluster-api_master-machines-1.yaml
            - 99_openshift-cluster-api_master-machines-2.yaml
+           - 99_openshift-machine-api_master-control-plane-machine-set.yaml
 
        - name: remove existing backup dir
          file:
