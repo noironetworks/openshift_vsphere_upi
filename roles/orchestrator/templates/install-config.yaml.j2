@@ -44,7 +44,7 @@ platform:
     - name: {{ platform.vsphere.failureDomains[0].name }}
       region: {{ platform.vsphere.failureDomains[0].region }}
       zone: {{ platform.vsphere.failureDomains[0].zone }}
-      server: hypf-vc65.noiro.lab
+      server: {{ platform.vsphere.vcenters[0].server }}
       topology:
         computeCluster: {{ platform.vsphere.failureDomains[0].topology.computeCluster }}
         networks:
