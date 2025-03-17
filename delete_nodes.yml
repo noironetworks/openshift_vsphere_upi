@@ -1,10 +1,11 @@
 ---
   - hosts: orchestrator
+    become: yes
     tasks:
        - set_fact:
            terraform_dir: "{{ base_dir }}/terraform"
 
        - name: destroy nodes
          command:
-           cmd: terraform destroy --auto-approve -no-color
+           cmd: terraform destroy --auto-approve -no-color -lock=false
            chdir: "{{ terraform_dir }}"

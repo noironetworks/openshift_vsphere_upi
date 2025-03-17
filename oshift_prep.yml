@@ -1,5 +1,6 @@
 ---
   - hosts: orchestrator
+    become: yes
     tasks:
        - set_fact:
            bootstrap_dir: "{{ base_dir }}/bootstrap"
@@ -56,6 +57,14 @@
            path: "{{ base_dir }}/backup"
            state: directory
         
+       - name: Ensure correct permissions for .openshift_install_state.json
+         file:
+           path: /home/noiro/ocpinstall/bootstrap/.openshift_install_state.json
+           owner: noiro
+           group: noiro
+           mode: '0644'
+         become: yes  # Run with elevated 
+
        - name: copy manifests to backup dir
          copy:
            src: "{{ bootstrap_dir }}/"
@@ -93,6 +102,7 @@
 #           chdir: "{{ bootstrap_dir }}"
    
   - hosts: lb
+    become: yes
     tasks:
        - set_fact:
            bootstrap_dir: "{{ base_dir }}/bootstrap"
@@ -107,7 +117,38 @@
            path: /var/www/html/ignition
            state: directory
 
+       - name: Ensure correct permissions for bootsteap.ign
+         file:
+           path: /home/noiro/ocpinstall/bootstrap/bootstrap.ign
+           owner: noiro
+           group: noiro
+           mode: '0644'
+         become: yes  # Run with elevated 
+
+       - name: Ensure correct permissions for master.ign
+         file:
+           path: /home/noiro/ocpinstall/bootstrap/master.ign
+           owner: noiro
+           group: noiro
+           mode: '0644'
+         become: yes  # Run with elevated 
+
+       - name: Ensure correct permissions for worker.ign
+         file:
+           path: /home/noiro/ocpinstall/bootstrap/worker.ign
+           owner: noiro
+           group: noiro
+           mode: '0644'
+         become: yes  # Run with elevated 
+
        - name: create bootstrap ignition
          copy:
            src: "{{ bootstrap_dir }}/bootstrap.ign"
            dest: /var/www/html/ignition
+       - name: Change owner of the ignition file
+         file:
+           path: /var/www/html/ignition/bootstrap.ign
+           owner: noiro    # Replace with the desired owner
+           group: noiro   # Replace with the desired group
+           mode: '0644'        # Optional: set the permissions as needed
+         become: yes           # Ensure it runs with elevated privileges (sudo)

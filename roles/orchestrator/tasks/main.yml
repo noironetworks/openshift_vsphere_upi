@@ -11,7 +11,7 @@
 - name: install openshift client
   unarchive:
      src: "{{ packages.openshift_client_linux_url }}"
-     dest: /usr/local/bin
+     dest: /usr/bin
      remote_src: True
      validate_certs: "{{ packages.validate_certs }}"
   environment: "{{ proxy_env }}"
@@ -19,10 +19,31 @@
 - name: install openshift install
   unarchive:
      src: "{{ packages.openshift_install_linux_url }}"
-     dest: /usr/local/bin
+     dest: /usr/bin
      remote_src: True
      validate_certs: "{{ packages.validate_certs }}"
   environment: "{{ proxy_env }}"
+
+- name: Check oc version
+  command: oc version
+  register: oc_version
+  changed_when: false
+  failed_when: false
+
+- name: Display oc version
+  debug:
+    msg: "OC version: {{ oc_version.stdout }}"
+
+- name: Check openshift-install version
+  command: openshift-install version
+  register: openshift_install_version
+  changed_when: false
+  failed_when: false
+
+- name: Display openshift-install version
+  debug:
+    msg: "OpenShift Installer version: {{ openshift_install_version.stdout }}"
+
 
 - name: create terraform main.tf 
   template:
@@ -47,6 +68,17 @@
      src: versions.tf.j2
      dest: "{{ base_dir }}/terraform/versions.tf"
      mode: u=rw,g=r,o=r
+
+- name: Display Proxy Environment
+  debug:
+    msg:
+      - "NO_PROXY: {{ proxy_env}}"
+      - "PATH: {{ lookup('env', 'PATH') }}"
+
+- name: Check terraform binary location
+  command: which terraform
+  register: terraform_path
+  failed_when: terraform_path.stdout == ''
 
 - name: Init terraform
   command: terraform init -no-color

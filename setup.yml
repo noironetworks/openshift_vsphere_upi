@@ -1,10 +1,12 @@
 ---
 
   - hosts: orchestrator
+    become: yes
     roles:
       - role: orchestrator
 
   - hosts: lb
+    become: yes
     roles:
       - role: lb_selinux
       - role: bertvv.httpd

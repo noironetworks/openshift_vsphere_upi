@@ -1,12 +1,13 @@
 ---
   - hosts: orchestrator
+    become: yes
     tasks:
        - set_fact:
            terraform_dir: "{{ base_dir }}/terraform"
 
        - name: create nodes
          command:
-           cmd: terraform apply --auto-approve -no-color -parallelism=1
+           cmd: terraform apply --auto-approve -no-color -parallelism=1 -lock=false
            chdir: "{{ terraform_dir }}"
 
        - name: setup cron job to auto approve csr
