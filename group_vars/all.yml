@@ -2,7 +2,7 @@
 #domainname
 #   type: string, 
 #   required: yes
-domainname: ocp.ocp417.lab
+domainname: ocp.ocp418.lab
 
 #provision_dns
 #   type: boolean, True or False
@@ -48,8 +48,8 @@ packages:
 
 
    terraform_url: https://releases.hashicorp.com/terraform/1.0.0/terraform_1.0.0_linux_amd64.zip
-   openshift_client_linux_url: https://mirror.openshift.com/pub/openshift-v4/clients/ocp/4.17.18/openshift-client-linux-4.17.18.tar.gz
-   openshift_install_linux_url: https://mirror.openshift.com/pub/openshift-v4/clients/ocp/4.17.18/openshift-install-linux-4.17.18.tar.gz
+   openshift_client_linux_url: https://mirror.openshift.com/pub/openshift-v4/clients/ocp/4.18.16/openshift-client-linux-4.18.16.tar.gz
+   openshift_install_linux_url: https://mirror.openshift.com/pub/openshift-v4/clients/ocp/4.18.16/openshift-install-linux-4.18.16.tar.gz
 
 
 #default_aci_manifests_archive:
@@ -83,8 +83,8 @@ platform:
         datacenter: k8s-scale
         datastore: /k8s-scale/datastore/k8s-scale-ds-esxi-2-nvme
 
-    RHCOS_template_name: RHCOS417
-    folder: ocp-417
+    RHCOS_template_name: ocp-4.18-node-golden-image
+    folder: ocp-418
 
 #base_dir
 #  type: directory path
