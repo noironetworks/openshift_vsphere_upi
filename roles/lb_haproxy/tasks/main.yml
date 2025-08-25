@@ -32,6 +32,13 @@
   register: config_changed
   when: ansible_distribution == "RedHat" and ansible_distribution_major_version | int == 8
 
+- name: install haproxy config
+  template:
+     src: haproxy.cfg.9.j2
+     dest: /etc/haproxy/haproxy.cfg
+  register: config_changed
+  when: ansible_distribution == "RedHat" and ansible_distribution_major_version | int == 9
+
 - name: restart and enable haproxy
   service:
      name: haproxy
